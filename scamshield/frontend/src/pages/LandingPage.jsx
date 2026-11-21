@@ -27,6 +27,106 @@ import {
 } from 'lucide-react'
 import { useMessageScanner, useUrlScanner } from '../hooks/useScanner.js'
 
+function HeroFeatureCard({ badge, title, desc, icon: Icon, isGoggles = false, className = '' }) {
+  return (
+    <div className={`rounded-2xl border border-neutral-200/80 bg-white/95 p-3.5 sm:p-4 shadow-floating backdrop-blur-md hover:-translate-y-1 transition-transform ${className}`}>
+      <div className="flex items-start gap-3.5">
+        {isGoggles ? (
+          <div className="shrink-0 pt-0.5">
+            <img src="/goggles-clean.png" alt="ScamLens Goggles" className="h-11 sm:h-12 w-auto object-contain drop-shadow-sm" />
+          </div>
+        ) : (
+          <span className="flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-xl bg-tint-blue text-brand">
+            <Icon className="h-4.5 w-4.5 sm:h-5 sm:w-5" />
+          </span>
+        )}
+        <div className="min-w-0">
+          <span className="text-[9px] sm:text-[10px] font-bold tracking-wider text-brand uppercase block">
+            {badge}
+          </span>
+          <h4 className="font-nunito text-xs sm:text-sm font-bold text-neutral-900 mt-0.5">
+            {title}
+          </h4>
+          <p className="text-[11px] sm:text-xs text-neutral-500 mt-1 leading-snug">
+            {desc}
+          </p>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function PhoneMockupScreen() {
+  return (
+    <div className="relative z-10 w-[270px] sm:w-[290px] h-[520px] sm:h-[550px] rounded-[2.8rem] border-[6px] border-neutral-900 bg-neutral-900 shadow-[0_30px_70px_-20px_rgba(0,0,0,0.35)] overflow-hidden flex flex-col shrink-0">
+      {/* Dynamic Island Notch */}
+      <div className="h-4 w-20 rounded-full bg-black mx-auto mt-2 shrink-0 z-30" />
+
+      {/* Chat App Screen (WhatsApp-style as in screenshot) */}
+      <div className="flex-1 bg-[#EFEAE2] flex flex-col justify-between overflow-hidden text-left relative">
+        {/* Chat Top Bar */}
+        <div className="bg-[#075E54] text-white px-3 py-2.5 flex items-center justify-between shrink-0 shadow-sm">
+          <div className="flex items-center gap-2">
+            <div className="h-8 w-8 rounded-full bg-white/95 flex items-center justify-center p-1 shadow-sm shrink-0">
+              <img src="/goggles-clean.png" alt="ScamLens" className="w-full h-full object-contain" />
+            </div>
+            <div>
+              <p className="font-nunito text-xs font-bold leading-tight">ScamLens</p>
+              <p className="text-[9px] text-emerald-200 leading-tight">Online Assistant</p>
+            </div>
+          </div>
+          <span className="text-white/80 text-xs">⋮</span>
+        </div>
+
+        {/* Chat Conversation Scroll Area */}
+        <div className="p-2.5 space-y-2 overflow-y-auto text-[10px] leading-relaxed">
+          <div className="flex justify-center">
+            <span className="rounded-md bg-white/90 px-2 py-0.5 text-[8px] font-semibold text-neutral-500 shadow-sm">
+              Today
+            </span>
+          </div>
+
+          {/* User Bubble (Right) */}
+          <div className="ml-auto max-w-[90%] rounded-lg rounded-tr-none bg-[#D9FDD3] p-2 shadow-sm">
+            <p className="text-neutral-900 text-[10px] leading-snug">
+              Is this SBI KYC message genuine? - <span className="font-semibold text-neutral-800">"Dear Customer, your SBI account KYC will expire today. Update immediately at sbi-kycverify.in or your account will be suspended. For help call +91 8xxxx xxxx7"</span>
+            </p>
+            <div className="mt-1 flex items-center justify-end gap-1 text-[8px] text-neutral-500">
+              <span>10:24</span>
+              <span className="text-[#53BDEB] font-bold">✓✓</span>
+            </div>
+          </div>
+
+          {/* ScamLens AI Bubble (Left) */}
+          <div className="mr-auto max-w-[95%] rounded-lg rounded-tl-none bg-white p-2.5 shadow-sm space-y-1.5 text-neutral-800">
+            <p className="text-[10px] leading-snug">
+              <strong className="text-rose-600 font-bold">This message is a scam</strong> and you should definitely not interact with it. The website link you were sent has a <strong className="text-rose-600">trust score of 18 out of 100</strong>, which is very low and indicates it is dangerous.
+            </p>
+            <p className="text-[9.5px] leading-snug text-neutral-700">
+              Please do not click the link, do not enter any details, and do not call the phone number provided. Banks like SBI will never ask you to update your KYC through an unofficial website link sent via text message.
+            </p>
+            <p className="text-[9.5px] leading-snug text-neutral-700">
+              If you have already entered details, call your bank immediately to block your card. Also, call the national cybercrime helpline at <strong className="text-brand">1930</strong>.
+            </p>
+            <span className="text-[8px] text-neutral-400 block text-right">10:25</span>
+          </div>
+        </div>
+
+        {/* Bottom Message Input Bar */}
+        <div className="bg-[#F0F2F5] px-2 py-1.5 flex items-center gap-1.5 shrink-0 border-t border-neutral-200">
+          <div className="flex-1 flex items-center gap-1.5 rounded-full bg-white px-2.5 py-1 text-[10px] text-neutral-400 shadow-sm">
+            <span>+</span>
+            <span className="text-[9px]">Type message...</span>
+          </div>
+          <span className="h-6 w-6 rounded-full bg-[#00A884] flex items-center justify-center text-white text-[10px]">
+            🎤
+          </span>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function LandingPage() {
   const navigate = useNavigate()
 
@@ -173,8 +273,10 @@ function LandingPage() {
             </a>
           </div>
 
-          {/* ── Main Phone Mockup & Undulating Wave Visual (Exact match to image) ── */}
-          <div className="relative mx-auto mt-12 sm:mt-16 max-w-5xl h-[560px] sm:h-[620px] flex items-center justify-center select-none">
+          {/* ── Main Phone Mockup & Visuals ── */}
+          
+          {/* Desktop Layout (screens >= 1024px): Floating cards around phone with SVG Ribbon */}
+          <div className="hidden lg:flex relative mx-auto mt-12 sm:mt-16 max-w-5xl h-[620px] items-center justify-center select-none">
             {/* SVG Undulating Gradient Ribbon Wave */}
             <svg
               className="absolute inset-x-0 top-1/2 -translate-y-1/2 w-full h-[340px] pointer-events-none z-0 overflow-visible"
@@ -201,159 +303,104 @@ function LandingPage() {
             </svg>
 
             {/* Top-Left Floating Card (FLEXIBLE INPUT) */}
-            <div className="absolute top-6 left-2 sm:left-6 lg:left-12 z-20 w-[240px] sm:w-[265px] -rotate-1 animate-float-1 text-left">
-              <div className="rounded-2xl border border-neutral-200/80 bg-white/95 p-3.5 sm:p-4 shadow-floating backdrop-blur-md hover:-translate-y-1 transition-transform">
-                <div className="flex items-start gap-3">
-                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-tint-blue text-brand">
-                    <MessageSquare className="h-4.5 w-4.5" />
-                  </span>
-                  <div>
-                    <span className="text-[9px] font-bold tracking-wider text-brand uppercase block">
-                      FLEXIBLE INPUT
-                    </span>
-                    <h4 className="font-nunito text-xs sm:text-sm font-bold text-neutral-900 mt-0.5">
-                      9+ input types supported
-                    </h4>
-                    <p className="text-[11px] text-neutral-500 mt-1 leading-snug">
-                      Send text, screenshots, audio, links, files, contact details, and other suspicious information.
-                    </p>
-                  </div>
-                </div>
-              </div>
+            <div className="absolute top-6 left-6 lg:left-12 z-20 w-[265px] -rotate-1 animate-float-1 text-left">
+              <HeroFeatureCard
+                badge="FLEXIBLE INPUT"
+                title="9+ input types supported"
+                desc="Send text, screenshots, audio, links, files, contact details, and other suspicious information."
+                icon={MessageSquare}
+              />
             </div>
 
             {/* Bottom-Left Floating Card (PRACTICAL NEXT STEPS) */}
-            <div className="absolute bottom-6 left-3 sm:left-8 lg:left-14 z-20 w-[240px] sm:w-[265px] rotate-1 animate-float-2 text-left">
-              <div className="rounded-2xl border border-neutral-200/80 bg-white/95 p-3.5 sm:p-4 shadow-floating backdrop-blur-md hover:-translate-y-1 transition-transform">
-                <div className="flex items-start gap-3">
-                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-tint-blue text-brand">
-                    <Landmark className="h-4.5 w-4.5" />
-                  </span>
-                  <div>
-                    <span className="text-[9px] font-bold tracking-wider text-brand uppercase block">
-                      PRACTICAL NEXT STEPS
-                    </span>
-                    <h4 className="font-nunito text-xs sm:text-sm font-bold text-neutral-900 mt-0.5">
-                      Clear guidance
-                    </h4>
-                    <p className="text-[11px] text-neutral-500 mt-1 leading-snug">
-                      Know whether to proceed, ignore, block, report, or seek immediate help.
-                    </p>
-                  </div>
-                </div>
-              </div>
+            <div className="absolute bottom-6 left-8 lg:left-14 z-20 w-[265px] rotate-1 animate-float-2 text-left">
+              <HeroFeatureCard
+                badge="PRACTICAL NEXT STEPS"
+                title="Clear guidance"
+                desc="Know whether to proceed, ignore, block, report, or seek immediate help."
+                icon={Landmark}
+              />
             </div>
 
             {/* Center Realistic Phone Mockup */}
-            <div className="relative z-10 w-[275px] sm:w-[290px] h-[520px] sm:h-[550px] rounded-[2.8rem] border-[6px] border-neutral-900 bg-neutral-900 shadow-[0_30px_70px_-20px_rgba(0,0,0,0.35)] overflow-hidden flex flex-col">
-              {/* Dynamic Island Notch */}
-              <div className="h-4 w-20 rounded-full bg-black mx-auto mt-2 shrink-0 z-30" />
-
-              {/* Chat App Screen (WhatsApp-style as in screenshot) */}
-              <div className="flex-1 bg-[#EFEAE2] flex flex-col justify-between overflow-hidden text-left relative">
-                {/* Chat Top Bar */}
-                <div className="bg-[#075E54] text-white px-3 py-2.5 flex items-center justify-between shrink-0 shadow-sm">
-                  <div className="flex items-center gap-2">
-                    <div className="h-8 w-8 rounded-full bg-white/95 flex items-center justify-center p-1 shadow-sm shrink-0">
-                      <img src="/goggles-clean.png" alt="ScamLens" className="w-full h-full object-contain" />
-                    </div>
-                    <div>
-                      <p className="font-nunito text-xs font-bold leading-tight">ScamLens</p>
-                      <p className="text-[9px] text-emerald-200 leading-tight">Online Assistant</p>
-                    </div>
-                  </div>
-                  <span className="text-white/80 text-xs">⋮</span>
-                </div>
-
-                {/* Chat Conversation Scroll Area */}
-                <div className="p-2.5 space-y-2 overflow-y-auto text-[10px] leading-relaxed">
-                  <div className="flex justify-center">
-                    <span className="rounded-md bg-white/90 px-2 py-0.5 text-[8px] font-semibold text-neutral-500 shadow-sm">
-                      Today
-                    </span>
-                  </div>
-
-                  {/* User Bubble (Right) */}
-                  <div className="ml-auto max-w-[90%] rounded-lg rounded-tr-none bg-[#D9FDD3] p-2 shadow-sm">
-                    <p className="text-neutral-900 text-[10px] leading-snug">
-                      Is this SBI KYC message genuine? - <span className="font-semibold text-neutral-800">"Dear Customer, your SBI account KYC will expire today. Update immediately at sbi-kycverify.in or your account will be suspended. For help call +91 8xxxx xxxx7"</span>
-                    </p>
-                    <div className="mt-1 flex items-center justify-end gap-1 text-[8px] text-neutral-500">
-                      <span>10:24</span>
-                      <span className="text-[#53BDEB] font-bold">✓✓</span>
-                    </div>
-                  </div>
-
-                  {/* ScamLens AI Bubble (Left) */}
-                  <div className="mr-auto max-w-[95%] rounded-lg rounded-tl-none bg-white p-2.5 shadow-sm space-y-1.5 text-neutral-800">
-                    <p className="text-[10px] leading-snug">
-                      <strong className="text-rose-600 font-bold">This message is a scam</strong> and you should definitely not interact with it. The website link you were sent has a <strong className="text-rose-600">trust score of 18 out of 100</strong>, which is very low and indicates it is dangerous.
-                    </p>
-                    <p className="text-[9.5px] leading-snug text-neutral-700">
-                      Please do not click the link, do not enter any details, and do not call the phone number provided. Banks like SBI will never ask you to update your KYC through an unofficial website link sent via text message.
-                    </p>
-                    <p className="text-[9.5px] leading-snug text-neutral-700">
-                      If you have already entered details, call your bank immediately to block your card. Also, call the national cybercrime helpline at <strong className="text-brand">1930</strong>.
-                    </p>
-                    <span className="text-[8px] text-neutral-400 block text-right">10:25</span>
-                  </div>
-                </div>
-
-                {/* Bottom Message Input Bar */}
-                <div className="bg-[#F0F2F5] px-2 py-1.5 flex items-center gap-1.5 shrink-0 border-t border-neutral-200">
-                  <div className="flex-1 flex items-center gap-1.5 rounded-full bg-white px-2.5 py-1 text-[10px] text-neutral-400 shadow-sm">
-                    <span>+</span>
-                    <span className="text-[9px]">Type message...</span>
-                  </div>
-                  <span className="h-6 w-6 rounded-full bg-[#00A884] flex items-center justify-center text-white text-[10px]">
-                    🎤
-                  </span>
-                </div>
-              </div>
-            </div>
+            <PhoneMockupScreen />
 
             {/* Top-Right Floating Card (DEEP ANALYSIS) */}
-            <div className="absolute top-8 right-2 sm:right-6 lg:right-12 z-20 w-[240px] sm:w-[265px] rotate-1 animate-float-2 text-left">
-              <div className="rounded-2xl border border-neutral-200/80 bg-white/95 p-3.5 sm:p-4 shadow-floating backdrop-blur-md hover:-translate-y-1 transition-transform">
-                <div className="flex items-start gap-3">
-                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-tint-blue text-brand">
-                    <Sparkles className="h-4.5 w-4.5" />
-                  </span>
-                  <div>
-                    <span className="text-[9px] font-bold tracking-wider text-brand uppercase block">
-                      DEEP ANALYSIS
-                    </span>
-                    <h4 className="font-nunito text-xs sm:text-sm font-bold text-neutral-900 mt-0.5">
-                      40+ validations and checks
-                    </h4>
-                    <p className="text-[11px] text-neutral-500 mt-1 leading-snug">
-                      ScamLens examines technical, behavioural, identity, and threat intelligence signals.
-                    </p>
-                  </div>
-                </div>
-              </div>
+            <div className="absolute top-8 right-6 lg:right-12 z-20 w-[265px] rotate-1 animate-float-2 text-left">
+              <HeroFeatureCard
+                badge="DEEP ANALYSIS"
+                title="40+ validations and checks"
+                desc="ScamLens examines technical, behavioural, identity, and threat intelligence signals."
+                icon={Sparkles}
+              />
             </div>
 
             {/* Bottom-Right Floating Card (TRUSTED INITIATIVE) */}
-            <div className="absolute bottom-6 right-3 sm:right-8 lg:right-14 z-20 w-[240px] sm:w-[265px] -rotate-1 animate-float-1 text-left">
-              <div className="rounded-2xl border border-neutral-200/80 bg-white/95 p-3.5 sm:p-4 shadow-floating backdrop-blur-md hover:-translate-y-1 transition-transform">
-                <div className="flex items-start gap-3.5">
-                  <div className="shrink-0 pt-0.5">
-                    <img src="/goggles-clean.png" alt="ScamLens Goggles" className="h-11 sm:h-12 w-auto object-contain drop-shadow-sm" />
-                  </div>
-                  <div>
-                    <span className="text-[9px] font-bold tracking-wider text-brand uppercase block">
-                      TRUSTED INITIATIVE
-                    </span>
-                    <h4 className="font-nunito text-xs sm:text-sm font-bold text-neutral-900 mt-0.5">
-                      Backed by Experts
-                    </h4>
-                    <p className="text-[11px] text-neutral-500 mt-1 leading-snug">
-                      A digital safety initiative designed to help the public make safer online decisions.
-                    </p>
-                  </div>
-                </div>
-              </div>
+            <div className="absolute bottom-6 right-8 lg:right-14 z-20 w-[265px] -rotate-1 animate-float-1 text-left">
+              <HeroFeatureCard
+                badge="TRUSTED INITIATIVE"
+                title="Backed by Experts"
+                desc="A digital safety initiative designed to help the public make safer online decisions."
+                isGoggles={true}
+              />
+            </div>
+          </div>
+
+          {/* Mobile & Tablet Layout (< 1024px): Phone Mockup on top, clean feature cards below */}
+          <div className="lg:hidden mt-8 sm:mt-12 flex flex-col items-center select-none px-2">
+            {/* Phone Mockup with ambient backdrop wave */}
+            <div className="relative w-full flex justify-center py-2 overflow-hidden">
+              <svg
+                className="absolute inset-x-0 top-1/2 -translate-y-1/2 w-full h-[260px] pointer-events-none z-0 opacity-70"
+                viewBox="0 0 1200 450"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <defs>
+                  <linearGradient id="heroPathGradientMob" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stopColor="#00C8F0" />
+                    <stop offset="30%" stopColor="#00AEEF" />
+                    <stop offset="65%" stopColor="#0265DC" />
+                    <stop offset="100%" stopColor="#4169E1" />
+                  </linearGradient>
+                </defs>
+                <path
+                  d="M-50 90 C140 80 160 340 320 340 S490 140 630 170 S770 410 930 380 S1080 240 1250 430"
+                  stroke="url(#heroPathGradientMob)"
+                  strokeWidth="20"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              <PhoneMockupScreen />
+            </div>
+
+            {/* 4 Feature Cards neatly arranged in a responsive grid below phone */}
+            <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-3.5 w-full max-w-xl text-left">
+              <HeroFeatureCard
+                badge="FLEXIBLE INPUT"
+                title="9+ input types supported"
+                desc="Send text, screenshots, audio, links, files, contact details, and other suspicious information."
+                icon={MessageSquare}
+              />
+              <HeroFeatureCard
+                badge="DEEP ANALYSIS"
+                title="40+ validations and checks"
+                desc="ScamLens examines technical, behavioural, identity, and threat intelligence signals."
+                icon={Sparkles}
+              />
+              <HeroFeatureCard
+                badge="PRACTICAL NEXT STEPS"
+                title="Clear guidance"
+                desc="Know whether to proceed, ignore, block, report, or seek immediate help."
+                icon={Landmark}
+              />
+              <HeroFeatureCard
+                badge="TRUSTED INITIATIVE"
+                title="Backed by Experts"
+                desc="A digital safety initiative designed to help the public make safer online decisions."
+                isGoggles={true}
+              />
             </div>
           </div>
         </div>
