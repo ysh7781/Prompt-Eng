@@ -26,6 +26,7 @@ import {
   Camera,
 } from 'lucide-react'
 import { useMessageScanner, useUrlScanner } from '../hooks/useScanner.js'
+import { demoScan } from '../services/scannerApi.js'
 
 function HeroFeatureCard({ badge, title, desc, icon: Icon, isGoggles = false, className = '' }) {
   return (
@@ -165,36 +166,55 @@ function LandingPage() {
 
     setLiveResult({ loading: true })
     try {
-      const isUrl = input.startsWith('http://') || input.startsWith('https://') || input.includes('.xyz') || input.includes('.com')
-      if (isUrl) {
-        const res = await urlMutation.mutateAsync({ url: input })
-        setLiveResult({
-          score: res.data.risk_score != null ? Math.max(0, 100 - res.data.risk_score) : 25,
-          level: res.data.risk_level,
-          summary: res.data.explanation || 'Analyzed URL against known domain spoofing and phishing patterns.',
-          findings: res.data.findings || [],
-          recommendations: res.data.recommendations || [],
-        })
+      const isUrl =
+        input.startsWith('http://') ||
+        input.startsWith('https://') ||
+        (!input.includes(' ') &&
+          (input.includes('.xyz') ||
+            input.includes('.com') ||
+            input.includes('.in') ||
+            input.includes('.org') ||
+            input.includes('.net') ||
+            input.includes('.tk') ||
+            input.includes('.top') ||
+            input.includes('.live') ||
+            input.includes('.online')))
+
+      const inputType = isUrl ? 'url' : 'message'
+      const res = await demoScan({ input, input_type: inputType })
+      const data = res.data
+
+      const trustScore = data.risk_score != null ? Math.max(0, 100 - data.risk_score) : 100
+
+      let dynamicSummary = ''
+      if (data.risk_level === 'low') {
+        dynamicSummary =
+          'No suspicious threat indicators detected. The communication pattern appears clean and legitimate.'
+      } else if (data.risk_level === 'moderate') {
+        dynamicSummary =
+          'Moderate risk indicators flagged. Exercise caution and verify the sender before opening links or replying.'
+      } else if (data.risk_level === 'high') {
+        dynamicSummary =
+          'High threat level detected. Exhibits recognized social engineering, urgency triggers, or deceptive links.'
       } else {
-        const res = await messageMutation.mutateAsync({ content: input })
-        setLiveResult({
-          score: res.data.risk_score != null ? Math.max(0, 100 - res.data.risk_score) : 18,
-          level: res.data.risk_level,
-          summary: res.data.explanation || 'Evaluated message heuristic triggers.',
-          findings: res.data.findings || [],
-          recommendations: res.data.recommendations || [],
-        })
+        dynamicSummary =
+          'Critical threat detected! Strong indicators of credential harvesting or fraudulent financial impersonation. Do not interact.'
       }
+
+      setLiveResult({
+        score: trustScore,
+        level: data.risk_level,
+        summary: dynamicSummary,
+        findings: data.findings || [],
+        recommendations: data.recommendations || [],
+      })
     } catch (err) {
       setLiveResult({
-        score: 18,
+        score: 0,
         level: 'critical',
-        summary: 'High-risk patterns detected: simulated urgency and unauthorized credential collection.',
-        findings: [
-          { rule_code: 'URGENCY_TRIGGER', description: 'Simulated urgency designed to induce panic' },
-          { rule_code: 'CREDENTIAL_THEFT', description: 'Requests sensitive bank credentials or passcodes' },
-        ],
-        recommendations: ['Do not click any embedded links', 'Never share OTPs or passwords'],
+        summary: 'Unable to connect to scanner service. Please verify server connection.',
+        findings: [],
+        recommendations: ['Check internet and server connectivity.'],
       })
     }
   }
