@@ -125,66 +125,94 @@ function Navbar() {
             </div>
           )}
 
-          {/* Mobile hamburger toggle */}
+          {/* Mobile Animated Hamburger Button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden flex h-9 w-9 items-center justify-center rounded-full bg-tint-blue text-brand"
+            className="md:hidden relative flex h-9 w-9 items-center justify-center rounded-full bg-tint-blue text-brand hover:bg-blue-100/70 focus:outline-none transition-colors"
             aria-label="Toggle Menu"
+            aria-expanded={mobileMenuOpen}
           >
-            {mobileMenuOpen ? <X className="h-4.5 w-4.5" /> : <Menu className="h-4.5 w-4.5" />}
+            <span className="sr-only">Toggle navigation menu</span>
+            <div className="relative flex flex-col items-center justify-center w-4 h-4">
+              <span
+                className={`block h-0.5 w-4 rounded-full bg-brand transition-all duration-300 ease-in-out ${
+                  mobileMenuOpen ? 'rotate-45 translate-y-1' : '-translate-y-1'
+                }`}
+              />
+              <span
+                className={`block h-0.5 w-4 rounded-full bg-brand transition-all duration-200 ease-in-out ${
+                  mobileMenuOpen ? 'opacity-0 scale-x-0' : 'opacity-100 my-0.5'
+                }`}
+              />
+              <span
+                className={`block h-0.5 w-4 rounded-full bg-brand transition-all duration-300 ease-in-out ${
+                  mobileMenuOpen ? '-rotate-45 -translate-y-1' : 'translate-y-1'
+                }`}
+              />
+            </div>
           </button>
         </div>
       </div>
 
-      {/* Mobile Drawer */}
-      {mobileMenuOpen && (
-        <div className="md:hidden mt-2 mx-auto max-w-7xl rounded-2xl border border-neutral-100 bg-white/95 backdrop-blur-xl p-4 shadow-xl space-y-2">
+      {/* Animated Mobile Drawer Menu */}
+      <div
+        className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
+          mobileMenuOpen
+            ? 'max-h-96 opacity-100 translate-y-0 mt-2 pointer-events-auto'
+            : 'max-h-0 opacity-0 -translate-y-2 pointer-events-none mt-0'
+        }`}
+      >
+        <div className="mx-auto max-w-7xl rounded-2xl border border-neutral-200/80 bg-white/95 backdrop-blur-xl p-4 shadow-xl space-y-1.5 transition-transform duration-300">
           <a
             href="#why-scamlens"
             onClick={() => setMobileMenuOpen(false)}
-            className="block rounded-xl px-3 py-2 text-sm font-semibold text-neutral-700 hover:bg-tint-blue hover:text-brand"
+            className="flex items-center justify-between rounded-xl px-3 py-2.5 text-sm font-semibold text-neutral-700 hover:bg-tint-blue hover:text-brand transition-all group"
           >
-            Why ScamLens
+            <span>Why ScamLens</span>
+            <ArrowRight className="h-4 w-4 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-brand" />
           </a>
           <a
             href="#how-it-works"
             onClick={() => setMobileMenuOpen(false)}
-            className="block rounded-xl px-3 py-2 text-sm font-semibold text-neutral-700 hover:bg-tint-blue hover:text-brand"
+            className="flex items-center justify-between rounded-xl px-3 py-2.5 text-sm font-semibold text-neutral-700 hover:bg-tint-blue hover:text-brand transition-all group"
           >
-            How it Works
+            <span>How it Works</span>
+            <ArrowRight className="h-4 w-4 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-brand" />
           </a>
           <a
             href="#engine"
             onClick={() => setMobileMenuOpen(false)}
-            className="block rounded-xl px-3 py-2 text-sm font-semibold text-neutral-700 hover:bg-tint-blue hover:text-brand"
+            className="flex items-center justify-between rounded-xl px-3 py-2.5 text-sm font-semibold text-neutral-700 hover:bg-tint-blue hover:text-brand transition-all group"
           >
-            Engine
+            <span>Engine</span>
+            <ArrowRight className="h-4 w-4 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-brand" />
           </a>
           <a
             href="#faq"
             onClick={() => setMobileMenuOpen(false)}
-            className="block rounded-xl px-3 py-2 text-sm font-semibold text-neutral-700 hover:bg-tint-blue hover:text-brand"
+            className="flex items-center justify-between rounded-xl px-3 py-2.5 text-sm font-semibold text-neutral-700 hover:bg-tint-blue hover:text-brand transition-all group"
           >
-            FAQ
+            <span>FAQ</span>
+            <ArrowRight className="h-4 w-4 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-brand" />
           </a>
-          <div className="pt-2 border-t border-neutral-100 flex items-center justify-between">
+          <div className="pt-3 mt-1 border-t border-neutral-100 flex items-center justify-between">
             <Link
               to="/login"
               onClick={() => setMobileMenuOpen(false)}
-              className="text-xs font-bold text-neutral-700"
+              className="text-xs font-bold text-neutral-700 hover:text-brand px-2 py-1 rounded-lg transition-colors"
             >
               Sign In
             </Link>
             <Link
               to="/scanner/message"
               onClick={() => setMobileMenuOpen(false)}
-              className="brand-gradient rounded-full px-4 py-1.5 text-xs font-bold text-white shadow-sm"
+              className="brand-gradient rounded-full px-5 py-2 text-xs font-bold text-white shadow-sm shadow-brand/25 hover:opacity-90 transition-all"
             >
               Scan a Message
             </Link>
           </div>
         </div>
-      )}
+      </div>
     </header>
   )
 }
