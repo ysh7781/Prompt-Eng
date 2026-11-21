@@ -23,7 +23,8 @@ function LoginPage() {
   const [apiError, setApiError] = useState(null)
   const [showPassword, setShowPassword] = useState(false)
 
-  const from = location.state?.from?.pathname || '/dashboard'
+  const from = location.state?.from?.pathname
+  const target = from && from !== '/login' && from !== '/register' ? from : '/dashboard'
 
   const {
     register,
@@ -41,7 +42,7 @@ function LoginPage() {
     setApiError(null)
     try {
       await login(data)
-      navigate(from, { replace: true })
+      navigate(target, { replace: true })
     } catch (err) {
       const message =
         err.response?.data?.message ||

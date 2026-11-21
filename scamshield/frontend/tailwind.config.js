@@ -4,11 +4,24 @@ export default {
   theme: {
     extend: {
       colors: {
-        border: '#E8EFF6',
+        border: '#E5EDF5',
         input: '#E2EAF2',
-        ring: '#2563EB',
-        background: '#F4F8FD',
-        foreground: '#172B4D',
+        ring: '#0265DC',
+        background: '#FFFFFF',
+        foreground: '#0A0A0A',
+        brand: {
+          DEFAULT: '#0265DC',
+          deep: '#0047A5',
+          blue: '#0265DC',
+          'blue-hover': '#0047A5',
+          'blue-light': '#F5F9FF',
+          'blue-surface': '#E8F2FD',
+        },
+        'tint-blue': '#E8F2FD',
+        cyan: {
+          DEFAULT: '#14C4F4',
+          accent: '#14C4F4',
+        },
         navy: {
           DEFAULT: '#172B4D',
           dark: '#0B1727',
@@ -19,12 +32,6 @@ export default {
           light: '#94A3B8',
           subtle: '#F8FAFC',
           border: '#E2E8F0',
-        },
-        brand: {
-          blue: '#2563EB',
-          'blue-hover': '#1D4ED8',
-          'blue-light': '#EFF6FF',
-          'blue-surface': '#DBEAFE',
         },
         risk: {
           low: '#10B981',
@@ -38,17 +45,19 @@ export default {
         },
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+        sans: ['Nunito', 'Inter', 'system-ui', '-apple-system', 'sans-serif'],
+        nunito: ['Nunito', 'sans-serif'],
       },
       boxShadow: {
         subtle: '0 1px 3px 0 rgba(15, 23, 42, 0.04), 0 1px 2px -1px rgba(15, 23, 42, 0.02)',
         card: '0 2px 10px -1px rgba(23, 43, 77, 0.05), 0 1px 4px -1px rgba(23, 43, 77, 0.03)',
-        floating: '0 12px 30px -4px rgba(23, 43, 77, 0.08), 0 4px 12px -2px rgba(23, 43, 77, 0.04)',
-        hover: '0 10px 25px -5px rgba(23, 43, 77, 0.08), 0 8px 10px -6px rgba(23, 43, 77, 0.03)',
+        floating: '0 16px 38px -24px rgba(15, 23, 42, 0.3)',
+        brand: '0 10px 25px -5px rgba(2, 101, 220, 0.25)',
       },
       borderRadius: {
         '2xl': '1rem',
         '3xl': '1.5rem',
+        '4xl': '2rem',
       },
     },
   },

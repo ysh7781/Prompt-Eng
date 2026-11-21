@@ -1,11 +1,49 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react'
-import { login as apiLogin, logout as apiLogout, register as apiRegister, getMe } from '../services/authApi.js'
-import { setAccessToken, clearAccessToken } from '../services/api.js'
+import {
+  login as apiLogin,
+  logout as apiLogout,
+  register as apiRegister,
+  getMe,
+  refreshToken as apiRefreshToken,
+} from '../services/authApi.js'
+import {
+  setAccessToken,
+  setRefreshToken,
+  clearAccessToken,
+  getAccessToken,
+  getRefreshToken,
+} from '../services/api.js'
+
+const getStoredUser = () => {
+  try {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const saved = window.localStorage.getItem('user')
+      return saved ? JSON.parse(saved) : null
+    }
+  } catch {
+    // ignore
+  }
+  return null
+}
+
+const setStoredUser = (user) => {
+  try {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      if (user) {
+        window.localStorage.setItem('user', JSON.stringify(user))
+      } else {
+        window.localStorage.removeItem('user')
+      }
+    }
+  } catch {
+    // ignore
+  }
+}
 
 const AuthContext = createContext(null)
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null)
+  const [user, setUser] = useState(() => getStoredUser())
   const [loading, setLoading] = useState(true)
 
   const handleLogout = useCallback(async () => {
@@ -16,29 +54,59 @@ export function AuthProvider({ children }) {
     } finally {
       clearAccessToken()
       setUser(null)
+      setStoredUser(null)
     }
   }, [])
 
   // Listen for auth:logout event from API interceptor
   useEffect(() => {
-    window.addEventListener('auth:logout', handleLogout)
-    return () => window.removeEventListener('auth:logout', handleLogout)
+    if (typeof window !== 'undefined') {
+      window.addEventListener('auth:logout', handleLogout)
+      return () => window.removeEventListener('auth:logout', handleLogout)
+    }
   }, [handleLogout])
 
-  // On mount, try to restore session via /auth/me
+  // On mount, verify and restore session
   useEffect(() => {
     const restoreSession = async () => {
+      const token = getAccessToken()
+      const savedRefreshToken = getRefreshToken()
+
+      if (!token && !savedRefreshToken) {
+        setLoading(false)
+        return
+      }
+
       try {
         const response = await getMe()
         setUser(response.data)
-        // access_token may come back in response if server rotates it
+        setStoredUser(response.data)
         if (response.data.access_token) {
           setAccessToken(response.data.access_token)
         }
       } catch {
-        // No valid session
-        clearAccessToken()
-        setUser(null)
+        // If initial getMe failed, try refreshing access token using saved refresh token
+        if (savedRefreshToken) {
+          try {
+            const refreshRes = await apiRefreshToken(savedRefreshToken)
+            const newToken = refreshRes.data.access_token
+            setAccessToken(newToken)
+            if (refreshRes.data.refresh_token) {
+              setRefreshToken(refreshRes.data.refresh_token)
+            }
+            const meRes = await getMe()
+            setUser(meRes.data)
+            setStoredUser(meRes.data)
+          } catch {
+            clearAccessToken()
+            setUser(null)
+            setStoredUser(null)
+          }
+        } else {
+          clearAccessToken()
+          setUser(null)
+          setStoredUser(null)
+        }
       } finally {
         setLoading(false)
       }
@@ -48,17 +116,25 @@ export function AuthProvider({ children }) {
 
   const login = async (credentials) => {
     const response = await apiLogin(credentials)
-    const { access_token, user: userData } = response.data
+    const { access_token, refresh_token: rToken, user: userData } = response.data
     setAccessToken(access_token)
+    if (rToken) {
+      setRefreshToken(rToken)
+    }
     setUser(userData)
+    setStoredUser(userData)
     return userData
   }
 
   const register = async (data) => {
     const response = await apiRegister(data)
-    const { access_token, user: userData } = response.data
+    const { access_token, refresh_token: rToken, user: userData } = response.data
     setAccessToken(access_token)
+    if (rToken) {
+      setRefreshToken(rToken)
+    }
     setUser(userData)
+    setStoredUser(userData)
     return userData
   }
 
@@ -88,4 +164,3 @@ export function useAuth() {
 }
 
 export default AuthContext
-
