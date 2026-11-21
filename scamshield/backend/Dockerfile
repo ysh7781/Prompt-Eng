@@ -1,5 +1,5 @@
 # ── Build Stage ──────────────────────────────────────────────────────────────
-FROM rust:1.75-slim AS builder
+FROM rust:1-slim AS builder
 
 WORKDIR /app
 
@@ -10,14 +10,15 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy manifests first to cache dependencies
-COPY Cargo.toml ./
-# Create a dummy main to cache dependencies
-RUN mkdir src && echo 'fn main() {}' > src/main.rs
+COPY Cargo.toml Cargo.lock* ./
+# Create dummy source files to cache dependencies
+RUN mkdir src && echo 'fn main() {}' > src/main.rs && touch src/lib.rs
 RUN cargo build --release 2>/dev/null || true
 RUN rm -rf src
 
 # Copy real source
 COPY . .
+RUN touch src/main.rs src/lib.rs
 
 # Build release binary
 RUN cargo build --release
