@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Globe, AlertCircle, Shield, ArrowRight, Trash2, ExternalLink } from 'lucide-react'
+import { Globe, Shield, ArrowRight, Trash2, AlertCircle, Sparkles, Lock, ExternalLink } from 'lucide-react'
 import { useUrlScanner } from '../hooks/useScanner.js'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../components/ui/Card.jsx'
 import { Button } from '../components/ui/Button.jsx'
@@ -10,7 +10,6 @@ import ScanResult from '../components/scanner/ScanResult.jsx'
 
 function UrlScannerPage() {
   const [url, setUrl] = useState('')
-  const [saveContent, setSaveContent] = useState(true)
   const [validationError, setValidationError] = useState('')
   const [result, setResult] = useState(null)
 
@@ -18,7 +17,6 @@ function UrlScannerPage() {
 
   const validateUrl = (string) => {
     try {
-      // If no protocol, test with https
       const testStr = string.startsWith('http://') || string.startsWith('https://') ? string : `https://${string}`
       new URL(testStr)
       return true
@@ -31,11 +29,11 @@ function UrlScannerPage() {
     e.preventDefault()
     const trimmed = url.trim()
     if (!trimmed) {
-      setValidationError('Please enter a URL or web address to analyze.')
+      setValidationError('Please enter a target web URL to inspect.')
       return
     }
     if (!validateUrl(trimmed)) {
-      setValidationError('Please enter a valid URL (e.g., https://example.com or example.com).')
+      setValidationError('Please enter a valid URL (e.g. https://example.com or http://192.168.1.1).')
       return
     }
 
@@ -43,11 +41,10 @@ function UrlScannerPage() {
     try {
       const response = await scanMutation.mutateAsync({
         url: trimmed,
-        save_content: saveContent,
       })
       setResult(response.data)
     } catch (err) {
-      // Handled via scanMutation.error
+      // Handled in UI
     }
   }
 
@@ -58,136 +55,116 @@ function UrlScannerPage() {
   }
 
   return (
-    <div className="space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold text-white tracking-tight">Phishing & URL Scanner</h1>
-        <p className="text-white/50 text-sm mt-1">
-          Safely inspect web links for typosquatting, deceptive domain structures, IP hosts, and fraudulent redirect paths.
-        </p>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-        {/* Input Form */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base flex items-center gap-2">
-              <Globe className="h-4 w-4 text-blue-400" /> Target URL
-            </CardTitle>
-            <CardDescription>
-              We analyze the domain and path heuristics without directly navigating to the target website.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleScan} className="space-y-4">
-              <div className="space-y-1.5">
-                <div className="relative">
-                  <Globe className="absolute left-3 top-2.5 h-4 w-4 text-white/40" />
-                  <Input
-                    type="text"
-                    placeholder="https://paypal-security-update.suspicious-domain.com/login"
-                    value={url}
-                    onChange={(e) => {
-                      setUrl(e.target.value)
-                      if (validationError) setValidationError('')
-                    }}
-                    className="pl-9 font-mono text-sm"
-                  />
-                </div>
-              </div>
-
-              {url && (
-                <div className="rounded-lg border border-white/5 bg-white/[0.02] p-3 text-xs">
-                  <span className="text-white/40 block mb-1">Safe Display Preview:</span>
-                  <p className="text-blue-300 font-mono break-all select-all">{url}</p>
-                </div>
-              )}
-
-              {validationError && (
-                <Alert variant="destructive">
-                  <div className="flex items-center gap-2">
-                    <AlertCircle className="h-4 w-4" />
-                    <AlertDescription>{validationError}</AlertDescription>
-                  </div>
-                </Alert>
-              )}
-
-              {scanMutation.isError && (
-                <Alert variant="destructive">
-                  <div className="flex items-center gap-2">
-                    <AlertCircle className="h-4 w-4" />
-                    <AlertDescription>
-                      {scanMutation.error?.response?.data?.message ||
-                        scanMutation.error?.response?.data?.error ||
-                        'Failed to inspect URL. Please check backend connectivity.'}
-                    </AlertDescription>
-                  </div>
-                </Alert>
-              )}
-
-              {/* Privacy Checkbox */}
-              <div className="rounded-lg border border-white/5 bg-white/[0.02] p-3 flex items-start gap-3">
-                <input
-                  type="checkbox"
-                  id="saveUrlContent"
-                  checked={saveContent}
-                  onChange={(e) => setSaveContent(e.target.checked)}
-                  className="mt-1 h-4 w-4 rounded border-white/20 bg-white/5 text-blue-600 focus:ring-blue-500"
-                />
-                <label htmlFor="saveUrlContent" className="text-xs text-white/70 cursor-pointer">
-                  <span className="font-medium text-white block">Log URL into scan records</span>
-                  Keep this link in your private history for audit trails and statistical tracking.
-                </label>
-              </div>
-
-              <div className="flex items-center justify-between pt-2">
-                {url && (
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    onClick={handleReset}
-                    className="text-white/40 hover:text-white gap-1"
-                  >
-                    <Trash2 className="h-3.5 w-3.5" /> Clear
-                  </Button>
-                )}
-                <div className="ml-auto">
-                  <Button type="submit" disabled={scanMutation.isPending || !url.trim()}>
-                    {scanMutation.isPending ? (
-                      <span className="flex items-center gap-2">
-                        <Spinner size="sm" /> Scanning URL...
-                      </span>
-                    ) : (
-                      <span className="flex items-center gap-2">
-                        Inspect URL <ArrowRight className="h-4 w-4" />
-                      </span>
-                    )}
-                  </Button>
-                </div>
-              </div>
-            </form>
-          </CardContent>
-        </Card>
-
-        {/* Results Panel */}
+    <div className="space-y-8 max-w-4xl mx-auto">
+      {/* Top Header (Image 2 style) */}
+      <div className="flex items-center gap-4">
+        <div className="h-12 w-12 rounded-2xl bg-[#0F1E36] flex items-center justify-center text-white shadow-sm shrink-0">
+          <Globe className="h-6 w-6 text-blue-400" />
+        </div>
         <div>
-          {result ? (
-            <ScanResult result={result} />
-          ) : (
-            <Card className="border-dashed border-white/10 bg-transparent">
-              <CardContent className="py-16 flex flex-col items-center justify-center text-center">
-                <div className="p-4 rounded-2xl bg-indigo-600/10 border border-indigo-500/20 text-indigo-400 mb-4">
-                  <Shield className="h-8 w-8" />
-                </div>
-                <h3 className="text-base font-semibold text-white/80">Awaiting URL Submission</h3>
-                <p className="text-sm text-white/40 max-w-sm mt-1">
-                  Enter any link to test against punycode exploits, IP hosts, domain randomness, and known phishing triggers.
-                </p>
-              </CardContent>
-            </Card>
-          )}
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#172B4D] tracking-tight">
+            URL Security Scanner
+          </h1>
+          <p className="text-xs sm:text-sm text-[#64748B] mt-0.5">
+            Inspect links safely before visiting • Zero execution sandbox
+          </p>
         </div>
       </div>
+
+      {/* Main Scan Card (Image 2 style) */}
+      <Card className="rounded-3xl border-[#E8EFF6] bg-white p-6 sm:p-10 shadow-[0_4px_24px_rgba(23,43,77,0.05)]">
+        <div className="text-center max-w-lg mx-auto mb-6">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#EFF6FF] border border-blue-200/80 text-[11px] font-semibold text-[#2563EB] mb-3">
+            <span className="h-2 w-2 rounded-full bg-emerald-500"></span>
+            <span>Quick & Comprehensive Scanning</span>
+          </div>
+          <h2 className="text-xl sm:text-2xl font-bold text-[#172B4D] tracking-tight">
+            Start New Scan
+          </h2>
+          <p className="text-xs sm:text-sm text-[#64748B] mt-1">
+            Enter target URL for comprehensive vulnerability, homograph, and phishing analysis.
+          </p>
+        </div>
+
+        {validationError && (
+          <Alert variant="destructive" className="mb-4">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>{validationError}</AlertDescription>
+          </Alert>
+        )}
+
+        {scanMutation.isError && (
+          <Alert variant="destructive" className="mb-4">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>
+              {scanMutation.error?.response?.data?.message || 'Failed to complete URL analysis. Please try again.'}
+            </AlertDescription>
+          </Alert>
+        )}
+
+        <form onSubmit={handleScan} className="space-y-4">
+          <div className="relative">
+            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#94A3B8]">
+              <Globe className="h-4 w-4" />
+            </div>
+            <input
+              type="text"
+              value={url}
+              onChange={(e) => {
+                setUrl(e.target.value)
+                if (validationError) setValidationError('')
+              }}
+              placeholder="https://example.com/login-verification..."
+              className="w-full h-14 rounded-2xl border border-[#E2EAF2] bg-[#F8FAFC] pl-11 pr-20 text-sm text-[#172B4D] placeholder:text-[#94A3B8] shadow-inner focus:bg-white focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/15 focus:outline-none transition-all"
+            />
+            {url && (
+              <button
+                type="button"
+                onClick={handleReset}
+                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs text-[#94A3B8] hover:text-rose-600 transition-colors"
+              >
+                <Trash2 className="h-4 w-4" />
+              </button>
+            )}
+          </div>
+
+          <div className="flex items-center justify-between text-xs text-[#64748B] px-1">
+            <div className="flex items-center gap-1.5">
+              <Lock className="h-3.5 w-3.5 text-emerald-600" />
+              <span>Safe analysis: Never executes JavaScript or arbitrary redirects</span>
+            </div>
+          </div>
+
+          {/* Centered Launch Scan Button (Image 2 style) */}
+          <div className="pt-3 flex justify-center">
+            <Button
+              type="submit"
+              disabled={scanMutation.isPending}
+              className="h-12 px-8 rounded-xl font-semibold text-sm shadow-md gap-2"
+            >
+              {scanMutation.isPending ? (
+                <>
+                  <Spinner size="sm" />
+                  <span>Inspecting URL Structure...</span>
+                </>
+              ) : (
+                <>
+                  <Shield className="h-4 w-4" />
+                  <span>Launch Security Scan</span>
+                  <ArrowRight className="h-4 w-4" />
+                </>
+              )}
+            </Button>
+          </div>
+        </form>
+      </Card>
+
+      {/* Analysis Results Display */}
+      {result && (
+        <div className="pt-2">
+          <ScanResult result={result} />
+        </div>
+      )}
     </div>
   )
 }

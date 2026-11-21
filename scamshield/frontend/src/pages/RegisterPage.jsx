@@ -9,7 +9,7 @@ import { Input } from '../components/ui/Input.jsx'
 import { Label } from '../components/ui/Label.jsx'
 import { Alert, AlertDescription } from '../components/ui/Alert.jsx'
 import { Spinner } from '../components/ui/Spinner.jsx'
-import { User, Mail, Lock, AlertCircle, Check } from 'lucide-react'
+import { AlertCircle, Eye, EyeOff } from 'lucide-react'
 
 const registerSchema = z
   .object({
@@ -18,8 +18,8 @@ const registerSchema = z
     password: z
       .string()
       .min(8, 'Password must be at least 8 characters')
-      .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
-      .regex(/[0-9]/, 'Password must contain at least one number'),
+      .regex(/[A-Z]/, 'Must contain at least one uppercase letter')
+      .regex(/[0-9]/, 'Must contain at least one number'),
     confirmPassword: z.string().min(1, 'Please confirm your password'),
   })
   .refine((data) => data.password === data.confirmPassword, {
@@ -31,6 +31,7 @@ function RegisterPage() {
   const { register: registerUser } = useAuth()
   const navigate = useNavigate()
   const [apiError, setApiError] = useState(null)
+  const [showPassword, setShowPassword] = useState(false)
 
   const {
     register,
@@ -48,17 +49,6 @@ function RegisterPage() {
   })
 
   const passwordValue = watch('password', '')
-
-  const getPasswordStrength = (pass) => {
-    let score = 0
-    if (pass.length >= 8) score++
-    if (/[A-Z]/.test(pass)) score++
-    if (/[0-9]/.test(pass)) score++
-    if (/[^A-Za-z0-9]/.test(pass)) score++
-    return score
-  }
-
-  const strength = getPasswordStrength(passwordValue)
 
   const onSubmit = async (data) => {
     setApiError(null)
@@ -80,127 +70,97 @@ function RegisterPage() {
 
   return (
     <div>
-      <div className="mb-6 text-center">
-        <h2 className="text-2xl font-bold text-white tracking-tight">Create an Account</h2>
-        <p className="text-sm text-white/50 mt-1">Start protecting your communications with AI</p>
+      <div className="mb-6">
+        <h2 className="text-2xl font-bold text-[#172B4D] tracking-tight">Create Account</h2>
+        <p className="text-sm text-[#64748B] mt-1.5">Start safeguarding your digital communications</p>
       </div>
 
       {apiError && (
-        <Alert variant="destructive" className="mb-6">
-          <div className="flex items-center gap-2">
-            <AlertCircle className="h-4 w-4" />
-            <AlertDescription>{apiError}</AlertDescription>
-          </div>
+        <Alert variant="destructive" className="mb-5">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>{apiError}</AlertDescription>
         </Alert>
       )}
 
-      <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-4">
-        <div className="space-y-1.5">
+      <form noValidate onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <div className="space-y-1">
           <Label htmlFor="name">Full Name</Label>
-          <div className="relative">
-            <User className="absolute left-3 top-2.5 h-4 w-4 text-white/40" />
-            <Input
-              id="name"
-              type="text"
-              placeholder="John Doe"
-              className="pl-9"
-              {...register('name')}
-            />
-          </div>
+          <Input
+            id="name"
+            placeholder="Jane Doe"
+            {...register('name')}
+            className={errors.name ? 'border-rose-300' : ''}
+            autoComplete="name"
+          />
           {errors.name && (
-            <p className="text-xs text-red-400 mt-1">{errors.name.message}</p>
+            <p className="text-xs text-rose-600">{errors.name.message}</p>
           )}
         </div>
 
-        <div className="space-y-1.5">
+        <div className="space-y-1">
           <Label htmlFor="email">Email Address</Label>
-          <div className="relative">
-            <Mail className="absolute left-3 top-2.5 h-4 w-4 text-white/40" />
-            <Input
-              id="email"
-              type="email"
-              placeholder="you@example.com"
-              className="pl-9"
-              {...register('email')}
-            />
-          </div>
+          <Input
+            id="email"
+            type="email"
+            placeholder="jane@example.com"
+            {...register('email')}
+            className={errors.email ? 'border-rose-300' : ''}
+            autoComplete="email"
+          />
           {errors.email && (
-            <p className="text-xs text-red-400 mt-1">{errors.email.message}</p>
+            <p className="text-xs text-rose-600">{errors.email.message}</p>
           )}
         </div>
 
-        <div className="space-y-1.5">
+        <div className="space-y-1">
           <Label htmlFor="password">Password</Label>
           <div className="relative">
-            <Lock className="absolute left-3 top-2.5 h-4 w-4 text-white/40" />
             <Input
               id="password"
-              type="password"
-              placeholder="Min. 8 chars, 1 uppercase, 1 number"
-              className="pl-9"
+              type={showPassword ? 'text' : 'password'}
+              placeholder="••••••••"
               {...register('password')}
+              className={errors.password ? 'border-rose-300 pr-10' : 'pr-10'}
+              autoComplete="new-password"
             />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-[#94A3B8] hover:text-[#172B4D] transition-colors"
+            >
+              {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            </button>
           </div>
-          {passwordValue && (
-            <div className="mt-2 space-y-1">
-              <div className="flex gap-1 h-1.5 w-full">
-                <div
-                  className={`flex-1 rounded-full ${
-                    strength >= 1 ? 'bg-red-500' : 'bg-white/10'
-                  }`}
-                />
-                <div
-                  className={`flex-1 rounded-full ${
-                    strength >= 2 ? 'bg-yellow-500' : 'bg-white/10'
-                  }`}
-                />
-                <div
-                  className={`flex-1 rounded-full ${
-                    strength >= 3 ? 'bg-blue-500' : 'bg-white/10'
-                  }`}
-                />
-                <div
-                  className={`flex-1 rounded-full ${
-                    strength >= 4 ? 'bg-green-500' : 'bg-white/10'
-                  }`}
-                />
-              </div>
-              <p className="text-[10px] text-white/40 text-right">
-                {strength <= 1 && 'Weak'}
-                {strength === 2 && 'Fair'}
-                {strength === 3 && 'Good'}
-                {strength >= 4 && 'Strong'}
-              </p>
-            </div>
-          )}
+          <p className="text-[11px] text-[#64748B]">Use 8+ characters with uppercase letter and number.</p>
           {errors.password && (
-            <p className="text-xs text-red-400 mt-1">{errors.password.message}</p>
+            <p className="text-xs text-rose-600">{errors.password.message}</p>
           )}
         </div>
 
-        <div className="space-y-1.5">
+        <div className="space-y-1">
           <Label htmlFor="confirmPassword">Confirm Password</Label>
-          <div className="relative">
-            <Lock className="absolute left-3 top-2.5 h-4 w-4 text-white/40" />
-            <Input
-              id="confirmPassword"
-              type="password"
-              placeholder="Re-enter password"
-              className="pl-9"
-              {...register('confirmPassword')}
-            />
-          </div>
+          <Input
+            id="confirmPassword"
+            type={showPassword ? 'text' : 'password'}
+            placeholder="••••••••"
+            {...register('confirmPassword')}
+            className={errors.confirmPassword ? 'border-rose-300' : ''}
+            autoComplete="new-password"
+          />
           {errors.confirmPassword && (
-            <p className="text-xs text-red-400 mt-1">
-              {errors.confirmPassword.message}
-            </p>
+            <p className="text-xs text-rose-600">{errors.confirmPassword.message}</p>
           )}
         </div>
 
-        <Button type="submit" className="w-full mt-2" disabled={isSubmitting}>
+        <Button
+          type="submit"
+          className="w-full h-11 text-sm font-semibold shadow-sm mt-2"
+          disabled={isSubmitting}
+        >
           {isSubmitting ? (
             <span className="flex items-center gap-2">
-              <Spinner size="sm" /> Creating account...
+              <Spinner size="sm" />
+              Creating account...
             </span>
           ) : (
             'Create Account'
@@ -208,9 +168,9 @@ function RegisterPage() {
         </Button>
       </form>
 
-      <div className="mt-6 text-center text-sm text-white/50">
+      <div className="mt-6 text-center text-xs text-[#64748B]">
         Already have an account?{' '}
-        <Link to="/login" className="text-blue-400 hover:text-blue-300 font-medium">
+        <Link to="/login" className="font-semibold text-[#2563EB] hover:underline">
           Sign In
         </Link>
       </div>

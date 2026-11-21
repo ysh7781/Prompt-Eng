@@ -1,6 +1,6 @@
 import React from 'react'
-import { CheckCircle, AlertTriangle, Shield, Clock } from 'lucide-react'
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/Card.jsx'
+import { CheckCircle2, AlertTriangle, ShieldCheck, Clock, ShieldAlert, ArrowRight } from 'lucide-react'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../ui/Card.jsx'
 import RiskBadge from './RiskBadge.jsx'
 import RiskMeter from './RiskMeter.jsx'
 import FindingCard from './FindingCard.jsx'
@@ -22,28 +22,33 @@ function ScanResult({ result }) {
   const hasFindings = findings.length > 0
 
   return (
-    <div className="space-y-6 animate-in fade-in-0 slide-in-from-bottom-4 duration-500">
-      {/* Header summary */}
-      <Card>
-        <CardHeader>
-          <div className="flex items-start justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className={`p-2 rounded-lg ${
-                risk_level === 'low' ? 'bg-green-500/10' :
-                risk_level === 'moderate' ? 'bg-yellow-500/10' :
-                risk_level === 'high' ? 'bg-orange-500/10' :
-                'bg-red-500/10'
-              }`}>
-                {risk_level === 'low'
-                  ? <CheckCircle className="h-5 w-5 text-green-400" />
-                  : <AlertTriangle className="h-5 w-5 text-orange-400" />
-                }
+    <div className="space-y-6 animate-in fade-in-0 slide-in-from-bottom-3 duration-300">
+      {/* 1. Header Summary Card */}
+      <Card className="rounded-2xl border-[#E8EFF6] bg-white shadow-[0_2px_12px_rgba(23,43,77,0.04)]">
+        <CardHeader className="pb-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-3.5">
+              <div
+                className={`h-11 w-11 rounded-xl flex items-center justify-center shrink-0 border ${
+                  risk_level === 'low'
+                    ? 'bg-emerald-50 border-emerald-200 text-emerald-600'
+                    : risk_level === 'moderate'
+                    ? 'bg-amber-50 border-amber-200 text-amber-600'
+                    : 'bg-rose-50 border-rose-200 text-rose-600'
+                }`}
+              >
+                {risk_level === 'low' ? (
+                  <ShieldCheck className="h-6 w-6" />
+                ) : (
+                  <ShieldAlert className="h-6 w-6" />
+                )}
               </div>
               <div>
-                <CardTitle>Analysis Complete</CardTitle>
-                <p className="text-sm text-white/50 mt-1">
-                  {input_type === 'url' ? 'URL' : 'Message'} scan • {analyzed_at ? format(new Date(analyzed_at), 'MMM d, yyyy HH:mm') : 'Just now'}
-                </p>
+                <CardTitle className="text-lg">Analysis Complete</CardTitle>
+                <CardDescription className="text-xs mt-0.5">
+                  {input_type === 'url' ? 'URL Link Analysis' : 'Communication Text Analysis'} •{' '}
+                  {analyzed_at ? format(new Date(analyzed_at), 'MMM d, yyyy · HH:mm') : 'Just now'}
+                </CardDescription>
               </div>
             </div>
             <RiskBadge level={risk_level} />
@@ -54,50 +59,50 @@ function ScanResult({ result }) {
         </CardContent>
       </Card>
 
-      {/* Findings */}
-      {hasFindings && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <AlertTriangle className="h-4 w-4 text-orange-400" />
-              Detections ({findings.length})
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            {findings.map((finding, idx) => (
-              <FindingCard key={finding.id || idx} finding={finding} />
-            ))}
-          </CardContent>
-        </Card>
-      )}
-
-      {!hasFindings && (
-        <Card>
-          <CardContent className="py-8 flex flex-col items-center gap-3 text-center">
-            <div className="p-3 rounded-full bg-green-500/10 border border-green-500/20">
-              <CheckCircle className="h-6 w-6 text-green-400" />
+      {/* 2. Security Findings */}
+      <Card className="rounded-2xl border-[#E8EFF6] bg-white shadow-[0_2px_12px_rgba(23,43,77,0.04)]">
+        <CardHeader className="border-b border-[#E8EFF6] pb-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>Triggered Security Findings ({findings.length})</CardTitle>
+              <CardDescription>Explains specifically why this content was flagged</CardDescription>
             </div>
-            <p className="text-white/70 font-medium">No threats detected</p>
-            <p className="text-white/40 text-sm">This content appears to be safe.</p>
-          </CardContent>
-        </Card>
-      )}
+          </div>
+        </CardHeader>
+        <CardContent className="pt-6">
+          {hasFindings ? (
+            <div className="space-y-3">
+              {findings.map((finding, idx) => (
+                <FindingCard key={idx} finding={finding} />
+              ))}
+            </div>
+          ) : (
+            <div className="p-6 text-center rounded-xl bg-emerald-50/60 border border-emerald-200/60">
+              <CheckCircle2 className="h-8 w-8 text-emerald-600 mx-auto mb-2" />
+              <p className="text-sm font-semibold text-emerald-950">No threats detected</p>
+              <p className="text-xs text-emerald-800/80 mt-1 max-w-md mx-auto">
+                While this message did not trigger our heuristic fraud rules, always remain vigilant before entering passwords or sharing personal details.
+              </p>
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
-      {/* Recommendations */}
+      {/* 3. Recommended Safety Actions */}
       {recommendations.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Shield className="h-4 w-4 text-blue-400" />
-              Recommendations
-            </CardTitle>
+        <Card className="rounded-2xl border-[#E8EFF6] bg-white shadow-[0_2px_12px_rgba(23,43,77,0.04)]">
+          <CardHeader className="pb-3">
+            <CardTitle>Recommended Actions</CardTitle>
+            <CardDescription>Follow these precautions to protect your account and data</CardDescription>
           </CardHeader>
           <CardContent>
-            <ul className="space-y-2">
-              {recommendations.map((rec, idx) => (
-                <li key={idx} className="flex items-start gap-2 text-sm text-white/70">
-                  <span className="mt-1 h-1.5 w-1.5 rounded-full bg-blue-400 flex-shrink-0" />
-                  {rec}
+            <ul className="space-y-2.5">
+              {recommendations.map((rec, index) => (
+                <li key={index} className="flex items-start gap-2.5 text-xs text-[#172B4D]">
+                  <span className="h-5 w-5 rounded-full bg-[#EFF6FF] border border-blue-200 text-[#2563EB] flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">
+                    {index + 1}
+                  </span>
+                  <span className="leading-relaxed font-medium">{rec}</span>
                 </li>
               ))}
             </ul>
@@ -109,4 +114,3 @@ function ScanResult({ result }) {
 }
 
 export default ScanResult
-

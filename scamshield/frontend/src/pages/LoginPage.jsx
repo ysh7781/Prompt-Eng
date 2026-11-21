@@ -9,7 +9,7 @@ import { Input } from '../components/ui/Input.jsx'
 import { Label } from '../components/ui/Label.jsx'
 import { Alert, AlertDescription } from '../components/ui/Alert.jsx'
 import { Spinner } from '../components/ui/Spinner.jsx'
-import { Lock, Mail, AlertCircle } from 'lucide-react'
+import { Lock, Mail, AlertCircle, Eye, EyeOff } from 'lucide-react'
 
 const loginSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
@@ -21,6 +21,7 @@ function LoginPage() {
   const navigate = useNavigate()
   const location = useLocation()
   const [apiError, setApiError] = useState(null)
+  const [showPassword, setShowPassword] = useState(false)
 
   const from = location.state?.from?.pathname || '/dashboard'
 
@@ -52,35 +53,33 @@ function LoginPage() {
 
   return (
     <div>
-      <div className="mb-6 text-center">
-        <h2 className="text-2xl font-bold text-white tracking-tight">Sign in to ScamShield</h2>
-        <p className="text-sm text-white/50 mt-1">Access your security dashboard and scanners</p>
+      <div className="mb-8">
+        <h2 className="text-2xl font-bold text-[#172B4D] tracking-tight">Sign In</h2>
+        <p className="text-sm text-[#64748B] mt-1.5">Welcome back to your security console</p>
       </div>
 
       {apiError && (
         <Alert variant="destructive" className="mb-6">
-          <div className="flex items-center gap-2">
-            <AlertCircle className="h-4 w-4" />
-            <AlertDescription>{apiError}</AlertDescription>
-          </div>
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>{apiError}</AlertDescription>
         </Alert>
       )}
 
-      <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-4">
+      <form noValidate onSubmit={handleSubmit(onSubmit)} className="space-y-5">
         <div className="space-y-1.5">
           <Label htmlFor="email">Email Address</Label>
           <div className="relative">
-            <Mail className="absolute left-3 top-2.5 h-4 w-4 text-white/40" />
             <Input
               id="email"
               type="email"
-              placeholder="you@example.com"
-              className="pl-9"
+              placeholder="name@company.com"
               {...register('email')}
+              className={errors.email ? 'border-rose-300 focus:ring-rose-200' : ''}
+              autoComplete="email"
             />
           </div>
           {errors.email && (
-            <p className="text-xs text-red-400 mt-1">{errors.email.message}</p>
+            <p className="text-xs text-rose-600 mt-1">{errors.email.message}</p>
           )}
         </div>
 
@@ -89,24 +88,36 @@ function LoginPage() {
             <Label htmlFor="password">Password</Label>
           </div>
           <div className="relative">
-            <Lock className="absolute left-3 top-2.5 h-4 w-4 text-white/40" />
             <Input
               id="password"
-              type="password"
+              type={showPassword ? 'text' : 'password'}
               placeholder="••••••••"
-              className="pl-9"
               {...register('password')}
+              className={errors.password ? 'border-rose-300 focus:ring-rose-200 pr-10' : 'pr-10'}
+              autoComplete="current-password"
             />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-[#94A3B8] hover:text-[#172B4D] transition-colors"
+            >
+              {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            </button>
           </div>
           {errors.password && (
-            <p className="text-xs text-red-400 mt-1">{errors.password.message}</p>
+            <p className="text-xs text-rose-600 mt-1">{errors.password.message}</p>
           )}
         </div>
 
-        <Button type="submit" className="w-full mt-2" disabled={isSubmitting}>
+        <Button
+          type="submit"
+          className="w-full h-11 text-sm font-semibold shadow-sm"
+          disabled={isSubmitting}
+        >
           {isSubmitting ? (
             <span className="flex items-center gap-2">
-              <Spinner size="sm" /> Signing in...
+              <Spinner size="sm" />
+              Signing in...
             </span>
           ) : (
             'Sign In'
@@ -114,10 +125,10 @@ function LoginPage() {
         </Button>
       </form>
 
-      <div className="mt-6 text-center text-sm text-white/50">
-        Don&apos;t have an account?{' '}
-        <Link to="/register" className="text-blue-400 hover:text-blue-300 font-medium">
-          Create an account
+      <div className="mt-8 text-center text-xs text-[#64748B]">
+        Don't have an account yet?{' '}
+        <Link to="/register" className="font-semibold text-[#2563EB] hover:underline">
+          Sign Up
         </Link>
       </div>
     </div>

@@ -2,24 +2,34 @@ import React from 'react'
 import { cn } from '../../utils/cn.js'
 import { Spinner } from '../ui/Spinner.jsx'
 
-function StatsCard({ icon: Icon, label, value, sub, iconBg = 'bg-blue-600/10 border-blue-500/20', iconColor = 'text-blue-400', loading }) {
+function StatsCard({ icon: Icon, label, value, badgeText, badgeColor = 'bg-emerald-50 text-emerald-800 border-emerald-200', loading }) {
   return (
-    <div className="rounded-xl border border-white/10 bg-[#0a1628] p-5 flex items-center gap-4">
-      <div className={cn('flex-shrink-0 p-3 rounded-lg border', iconBg)}>
-        {Icon && <Icon className={cn('h-5 w-5', iconColor)} />}
-      </div>
-      <div className="flex-1 min-w-0">
-        <p className="text-xs text-white/50 font-medium uppercase tracking-wider">{label}</p>
-        {loading ? (
-          <Spinner size="sm" className="mt-1" />
-        ) : (
-          <p className="text-2xl font-bold text-white mt-0.5">{value ?? '—'}</p>
+    <div className="rounded-2xl border border-[#E8EFF6] bg-white p-5 shadow-[0_2px_10px_rgba(23,43,77,0.04)] hover:shadow-[0_4px_16px_rgba(23,43,77,0.07)] transition-all">
+      <div className="flex items-center justify-between mb-3">
+        <div className="h-10 w-10 rounded-xl bg-[#F8FAFC] border border-[#E8EFF6] flex items-center justify-center text-[#64748B]">
+          {Icon && <Icon className="h-5 w-5" />}
+        </div>
+        {badgeText && (
+          <span className={cn('text-[11px] font-semibold px-2 py-0.5 rounded-full border', badgeColor)}>
+            {badgeText}
+          </span>
         )}
-        {sub && <p className="text-xs text-white/40 mt-0.5">{sub}</p>}
+      </div>
+
+      <div>
+        <p className="text-xs font-medium text-[#64748B]">{label}</p>
+        {loading ? (
+          <div className="py-2">
+            <Spinner size="sm" />
+          </div>
+        ) : (
+          <p className="text-2xl sm:text-3xl font-extrabold text-[#172B4D] tracking-tight mt-1">
+            {value ?? '0'}
+          </p>
+        )}
       </div>
     </div>
   )
 }
 
 export default StatsCard
-

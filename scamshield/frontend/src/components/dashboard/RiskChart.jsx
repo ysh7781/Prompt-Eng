@@ -1,13 +1,13 @@
 import React from 'react'
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from 'recharts'
-import { RISK_CHART_COLORS } from '../../utils/riskColors.js'
+import { RISK_CHART_COLORS, getRiskLabel } from '../../utils/riskColors.js'
 
 const CustomTooltip = ({ active, payload }) => {
   if (active && payload && payload.length) {
     return (
-      <div className="rounded-lg border border-white/10 bg-[#0a1628] px-3 py-2 shadow-xl">
-        <p className="text-sm font-medium text-white capitalize">{payload[0].name}</p>
-        <p className="text-sm text-white/60">{payload[0].value} scans</p>
+      <div className="rounded-xl border border-[#E8EFF6] bg-white px-3.5 py-2.5 shadow-lg">
+        <p className="text-xs font-semibold text-[#172B4D] capitalize">{payload[0].name}</p>
+        <p className="text-xs font-medium text-[#64748B] mt-0.5">{payload[0].value} scans ({payload[0].payload?.percentage?.toFixed(1) || 0}%)</p>
       </div>
     )
   }
@@ -17,38 +17,42 @@ const CustomTooltip = ({ active, payload }) => {
 function RiskChart({ data }) {
   if (!data || data.length === 0) {
     return (
-      <div className="flex items-center justify-center h-48 text-white/30 text-sm">
-        No data available
+      <div className="flex flex-col items-center justify-center h-56 text-[#94A3B8] text-sm">
+        <p className="font-medium">No scans recorded yet</p>
+        <p className="text-xs text-[#94A3B8] mt-1">Run your first message or URL scan to view distribution</p>
       </div>
     )
   }
 
   const chartData = data.map((item) => ({
-    name: item.risk_level,
+    name: getRiskLabel(item.risk_level),
     value: item.count,
-    color: RISK_CHART_COLORS[item.risk_level] || '#6b7280',
+    percentage: item.percentage,
+    color: RISK_CHART_COLORS[item.risk_level] || '#94A3B8',
   }))
 
   return (
-    <ResponsiveContainer width="100%" height={220}>
+    <ResponsiveContainer width="100%" height={240}>
       <PieChart>
         <Pie
           data={chartData}
           cx="50%"
-          cy="50%"
-          innerRadius={55}
-          outerRadius={85}
+          cy="45%"
+          innerRadius={60}
+          outerRadius={88}
           paddingAngle={3}
           dataKey="value"
         >
           {chartData.map((entry, index) => (
-            <Cell key={`cell-${index}`} fill={entry.color} />
+            <Cell key={`cell-${index}`} fill={entry.color} stroke="#FFFFFF" strokeWidth={2} />
           ))}
         </Pie>
         <Tooltip content={<CustomTooltip />} />
         <Legend
+          verticalAlign="bottom"
+          height={36}
           formatter={(value) => (
-            <span className="text-xs capitalize text-white/60">{value}</span>
+            <span className="text-xs text-[#64748B] font-medium">{value}</span>
           )}
         />
       </PieChart>
@@ -57,4 +61,3 @@ function RiskChart({ data }) {
 }
 
 export default RiskChart
-

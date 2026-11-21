@@ -63,6 +63,7 @@ async fn main() -> anyhow::Result<()> {
 
     // Build the router
     let app = Router::new()
+        .route("/health", axum::routing::get(|| async { axum::Json(serde_json::json!({"status": "healthy"})) }))
         .nest("/api/v1", api_router(state))
         .layer(cors)
         .layer(TraceLayer::new_for_http())

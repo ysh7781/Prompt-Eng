@@ -4,7 +4,10 @@ import { cn } from '../../utils/cn.js'
 const Card = React.forwardRef(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn('rounded-xl border border-white/10 bg-[#0a1628] text-white shadow-lg', className)}
+    className={cn(
+      'rounded-xl border border-[#E5EDF5] bg-white text-[#172B4D] shadow-[0_1px_3px_0_rgba(23,43,77,0.05),0_2px_8px_0_rgba(23,43,77,0.03)] transition-all',
+      className
+    )}
     {...props}
   />
 ))
@@ -16,12 +19,12 @@ const CardHeader = React.forwardRef(({ className, ...props }, ref) => (
 CardHeader.displayName = 'CardHeader'
 
 const CardTitle = React.forwardRef(({ className, ...props }, ref) => (
-  <h3 ref={ref} className={cn('text-lg font-semibold text-white/90 leading-none tracking-tight', className)} {...props} />
+  <h3 ref={ref} className={cn('text-base font-semibold text-[#172B4D] leading-none tracking-tight', className)} {...props} />
 ))
 CardTitle.displayName = 'CardTitle'
 
 const CardDescription = React.forwardRef(({ className, ...props }, ref) => (
-  <p ref={ref} className={cn('text-sm text-white/50', className)} {...props} />
+  <p ref={ref} className={cn('text-sm text-[#64748B]', className)} {...props} />
 ))
 CardDescription.displayName = 'CardDescription'
 
@@ -36,4 +39,3 @@ const CardFooter = React.forwardRef(({ className, ...props }, ref) => (
 CardFooter.displayName = 'CardFooter'
 
 export { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
-

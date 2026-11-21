@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import { format } from 'date-fns'
 import {
   History as HistoryIcon,
@@ -10,11 +10,10 @@ import {
   ChevronLeft,
   ChevronRight,
   Filter,
-  CheckCircle,
-  X
+  Search,
 } from 'lucide-react'
 import { useHistory, useDeleteScan, useScanDetail } from '../hooks/useHistory.js'
-import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/Card.jsx'
+import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '../components/ui/Card.jsx'
 import { Button } from '../components/ui/Button.jsx'
 import RiskBadge from '../components/scanner/RiskBadge.jsx'
 import ScanResult from '../components/scanner/ScanResult.jsx'
@@ -31,6 +30,9 @@ import { Alert, AlertDescription } from '../components/ui/Alert.jsx'
 function HistoryPage() {
   const [page, setPage] = useState(1)
   const [limit] = useState(10)
+  const [searchTerm, setSearchTerm] = useState('')
+  const [selectedType, setSelectedType] = useState('all')
+  const [selectedRisk, setSelectedRisk] = useState('all')
   const [selectedScanId, setSelectedScanId] = useState(null)
   const [deleteConfirmId, setDeleteConfirmId] = useState(null)
 
@@ -38,9 +40,22 @@ function HistoryPage() {
   const { data: detailData, isLoading: detailLoading } = useScanDetail(selectedScanId)
   const deleteMutation = useDeleteScan()
 
-  const scans = data?.scans || data?.data || (Array.isArray(data) ? data : [])
-  const total = data?.total || data?.count || scans.length
-  const totalPages = Math.max(1, Math.ceil(total / limit))
+  const rawItems = data?.items || data?.scans || (Array.isArray(data) ? data : [])
+  const totalItems = data?.total || rawItems.length
+
+  // Client filter for search and type/risk filter
+  const filteredItems = useMemo(() => {
+    return rawItems.filter((item) => {
+      const matchesSearch = searchTerm
+        ? (item.input_content || '').toLowerCase().includes(searchTerm.toLowerCase())
+        : true
+      const matchesType = selectedType === 'all' ? true : item.input_type === selectedType
+      const matchesRisk = selectedRisk === 'all' ? true : item.risk_level === selectedRisk
+      return matchesSearch && matchesType && matchesRisk
+    })
+  }, [rawItems, searchTerm, selectedType, selectedRisk])
+
+  const totalPages = Math.max(1, Math.ceil(totalItems / limit))
 
   const handleDelete = async (id) => {
     try {
@@ -52,178 +67,226 @@ function HistoryPage() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
+      {/* Page Header */}
       <div>
-        <h1 className="text-3xl font-bold text-white tracking-tight">Scan History & Audits</h1>
-        <p className="text-white/50 text-sm mt-1">
-          Review previous message and URL scans, drill down into findings, or remove records.
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-[#172B4D] tracking-tight">Scan History</h1>
+        <p className="text-xs sm:text-sm text-[#64748B] mt-1">
+          Searchable audit trail of all verified SMS, messages, and suspicious URLs.
         </p>
       </div>
 
       {error && (
         <Alert variant="destructive">
-          <div className="flex items-center gap-2">
-            <AlertTriangle className="h-4 w-4" />
-            <AlertDescription>Failed to fetch history logs from the server.</AlertDescription>
-          </div>
+          <AlertTriangle className="h-4 w-4" />
+          <AlertDescription>Failed to load scan history records.</AlertDescription>
         </Alert>
       )}
 
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between pb-4">
-          <CardTitle className="text-base flex items-center gap-2">
-            <HistoryIcon className="h-4 w-4 text-blue-400" /> Recorded Scans ({total})
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          {isLoading ? (
-            <div className="py-20 flex flex-col items-center justify-center gap-2">
-              <Spinner size="lg" />
-              <p className="text-sm text-white/40">Loading history logs...</p>
-            </div>
-          ) : scans.length === 0 ? (
-            <div className="py-16 text-center text-white/40 text-sm">
-              No scan history found. Run a message or URL scan to populate this list.
-            </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-white/10 text-white/40 text-xs uppercase tracking-wider">
-                    <th className="pb-3 text-left font-medium">Type</th>
-                    <th className="pb-3 text-left font-medium">Content Snippet</th>
-                    <th className="pb-3 text-left font-medium">Risk Score</th>
-                    <th className="pb-3 text-left font-medium">Verdict</th>
-                    <th className="pb-3 text-left font-medium">Date Analyzed</th>
-                    <th className="pb-3 text-right font-medium">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-white/5">
-                  {scans.map((scan) => (
-                    <tr key={scan.id} className="hover:bg-white/[0.02] transition-colors">
-                      <td className="py-3.5 pr-4 whitespace-nowrap">
-                        <div className="flex items-center gap-2 text-white/60">
-                          {scan.input_type === 'url' ? (
-                            <Globe className="h-4 w-4 text-indigo-400" />
-                          ) : (
-                            <MessageSquare className="h-4 w-4 text-blue-400" />
-                          )}
-                          <span className="capitalize text-xs font-medium text-white/80">
-                            {scan.input_type}
-                          </span>
-                        </div>
-                      </td>
-                      <td className="py-3.5 pr-4 max-w-xs">
-                        <span className="text-white/70 text-xs truncate block font-mono">
-                          {scan.input_content || (
-                            <span className="text-white/30 italic">Not recorded</span>
-                          )}
-                        </span>
-                      </td>
-                      <td className="py-3.5 pr-4 whitespace-nowrap font-mono text-xs">
-                        <span className="text-white font-semibold">{scan.risk_score}</span>
-                        <span className="text-white/40">/100</span>
-                      </td>
-                      <td className="py-3.5 pr-4 whitespace-nowrap">
-                        <RiskBadge level={scan.risk_level} />
-                      </td>
-                      <td className="py-3.5 pr-4 whitespace-nowrap text-xs text-white/40">
-                        {scan.analyzed_at
-                          ? format(new Date(scan.analyzed_at), 'yyyy-MM-dd HH:mm')
-                          : '—'}
-                      </td>
-                      <td className="py-3.5 text-right whitespace-nowrap">
-                        <div className="flex items-center justify-end gap-2">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="h-8 w-8 p-0 text-white/60 hover:text-white"
-                            onClick={() => setSelectedScanId(scan.id)}
-                            title="View Details"
-                          >
-                            <Eye className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="h-8 w-8 p-0 text-red-400/70 hover:text-red-400 hover:bg-red-500/10"
-                            onClick={() => setDeleteConfirmId(scan.id)}
-                            title="Delete Record"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
+      {/* Filter and Search Bar (Image 3 style) */}
+      <Card className="rounded-2xl border-[#E8EFF6] bg-white p-4 shadow-sm">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+          {/* Search Box */}
+          <div className="relative w-full sm:w-80">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#94A3B8]" />
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Search content or URLs..."
+              className="w-full h-10 rounded-xl border border-[#E2EAF2] bg-[#F8FAFC] pl-10 pr-4 text-xs text-[#172B4D] placeholder:text-[#94A3B8] focus:bg-white focus:border-[#2563EB] focus:outline-none"
+            />
+          </div>
 
-          {/* Pagination Controls */}
-          {totalPages > 1 && (
-            <div className="flex items-center justify-between pt-6 border-t border-white/5 mt-4">
-              <span className="text-xs text-white/40">
-                Page {page} of {totalPages}
-              </span>
-              <div className="flex items-center gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  disabled={page <= 1}
-                  onClick={() => setPage((p) => Math.max(1, p - 1))}
-                  className="gap-1"
+          {/* Filter Pills */}
+          <div className="flex items-center gap-2.5 w-full sm:w-auto overflow-x-auto pb-1 sm:pb-0">
+            <div className="flex items-center gap-1.5 p-1 rounded-xl bg-[#F4F8FD] border border-[#E8EFF6] text-xs">
+              <span className="text-[#64748B] px-2 font-medium">Type:</span>
+              {['all', 'message', 'url'].map((type) => (
+                <button
+                  key={type}
+                  onClick={() => setSelectedType(type)}
+                  className={`px-2.5 py-1 rounded-lg text-xs font-semibold capitalize transition-all ${
+                    selectedType === type
+                      ? 'bg-white shadow-sm text-[#172B4D] border border-[#E8EFF6]'
+                      : 'text-[#64748B] hover:text-[#172B4D]'
+                  }`}
                 >
-                  <ChevronLeft className="h-3.5 w-3.5" /> Previous
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  disabled={page >= totalPages}
-                  onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                  className="gap-1"
-                >
-                  Next <ChevronRight className="h-3.5 w-3.5" />
-                </Button>
-              </div>
+                  {type}
+                </button>
+              ))}
             </div>
-          )}
-        </CardContent>
+
+            <div className="flex items-center gap-1.5 p-1 rounded-xl bg-[#F4F8FD] border border-[#E8EFF6] text-xs">
+              <span className="text-[#64748B] px-2 font-medium">Risk:</span>
+              {['all', 'critical', 'high', 'moderate', 'low'].map((risk) => (
+                <button
+                  key={risk}
+                  onClick={() => setSelectedRisk(risk)}
+                  className={`px-2.5 py-1 rounded-lg text-xs font-semibold capitalize transition-all ${
+                    selectedRisk === risk
+                      ? 'bg-white shadow-sm text-[#172B4D] border border-[#E8EFF6]'
+                      : 'text-[#64748B] hover:text-[#172B4D]'
+                  }`}
+                >
+                  {risk}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
       </Card>
 
-      {/* Detail Dialog */}
+      {/* Main Table Card (Image 3 style) */}
+      <Card className="rounded-2xl border-[#E8EFF6] bg-white shadow-sm overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm text-left">
+            <thead>
+              <tr className="border-b border-[#E8EFF6] text-[11px] uppercase tracking-wider text-[#94A3B8] font-semibold bg-[#F8FAFC]">
+                <th className="py-3 px-4">Type</th>
+                <th className="py-3 px-4">Input Preview</th>
+                <th className="py-3 px-4">Risk Level</th>
+                <th className="py-3 px-4">Risk Score</th>
+                <th className="py-3 px-4">Findings</th>
+                <th className="py-3 px-4">Scan Date</th>
+                <th className="py-3 px-4 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-[#E8EFF6]">
+              {isLoading ? (
+                <tr>
+                  <td colSpan="7" className="py-12 text-center text-[#94A3B8]">
+                    <div className="flex items-center justify-center gap-2">
+                      <Spinner size="sm" />
+                      <span>Loading records...</span>
+                    </div>
+                  </td>
+                </tr>
+              ) : filteredItems.length === 0 ? (
+                <tr>
+                  <td colSpan="7" className="py-12 text-center text-[#94A3B8]">
+                    <p className="font-medium text-[#64748B]">No matching scan records found</p>
+                    <p className="text-xs text-[#94A3B8] mt-1">Try resetting your filters or submit a new message/URL to scan.</p>
+                  </td>
+                </tr>
+              ) : (
+                filteredItems.map((scan) => (
+                  <tr key={scan.id} className="hover:bg-[#F4F8FD] transition-colors">
+                    <td className="py-3.5 px-4">
+                      <div className="flex items-center gap-2">
+                        <div className="h-7 w-7 rounded-lg bg-[#F1F5F9] border border-[#E2E8F0] flex items-center justify-center text-[#64748B]">
+                          {scan.input_type === 'url' ? (
+                            <Globe className="h-3.5 w-3.5" />
+                          ) : (
+                            <MessageSquare className="h-3.5 w-3.5" />
+                          )}
+                        </div>
+                        <span className="capitalize text-xs font-semibold text-[#172B4D]">{scan.input_type}</span>
+                      </div>
+                    </td>
+                    <td className="py-3.5 px-4 max-w-xs sm:max-w-sm">
+                      <p className="text-xs font-mono text-[#172B4D] truncate">
+                        {scan.input_content || <span className="text-[#94A3B8] italic font-sans">Content not saved</span>}
+                      </p>
+                    </td>
+                    <td className="py-3.5 px-4">
+                      <RiskBadge level={scan.risk_level} />
+                    </td>
+                    <td className="py-3.5 px-4">
+                      <span className="text-xs font-bold text-[#172B4D] font-mono">{scan.risk_score}/100</span>
+                    </td>
+                    <td className="py-3.5 px-4">
+                      <span className="text-xs text-[#64748B] font-medium">{scan.finding_count || 0} rule triggers</span>
+                    </td>
+                    <td className="py-3.5 px-4 text-xs text-[#64748B] whitespace-nowrap">
+                      {scan.analyzed_at ? format(new Date(scan.analyzed_at), 'MMM d, yyyy · HH:mm') : '—'}
+                    </td>
+                    <td className="py-3.5 px-4 text-right">
+                      <div className="flex items-center justify-end gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setSelectedScanId(scan.id)}
+                          className="h-8 px-2.5 text-xs text-[#172B4D]"
+                        >
+                          <Eye className="h-3.5 w-3.5 mr-1 text-[#64748B]" />
+                          Report
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setDeleteConfirmId(scan.id)}
+                          className="h-8 px-2 text-rose-600 hover:bg-rose-50 hover:text-rose-700"
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </Button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Pagination Controls */}
+        <div className="p-4 border-t border-[#E8EFF6] flex items-center justify-between text-xs text-[#64748B] bg-[#F8FAFC]">
+          <span>
+            Showing page {page} of {totalPages} ({totalItems} total scans)
+          </span>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={page <= 1}
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              className="h-8 px-3 text-xs"
+            >
+              <ChevronLeft className="h-3.5 w-3.5 mr-1" /> Previous
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={page >= totalPages}
+              onClick={() => setPage((p) => p + 1)}
+              className="h-8 px-3 text-xs"
+            >
+              Next <ChevronRight className="h-3.5 w-3.5 ml-1" />
+            </Button>
+          </div>
+        </div>
+      </Card>
+
+      {/* Detailed Report Modal */}
       <Dialog open={!!selectedScanId} onOpenChange={(open) => !open && setSelectedScanId(null)}>
         <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Scan Intelligence Report</DialogTitle>
-            <DialogDescription>
-              Detailed breakdown of rule contributions and mitigation findings.
-            </DialogDescription>
+            <DialogTitle>Historical Scan Report</DialogTitle>
+            <DialogDescription>Full assessment details and rule trigger breakdown</DialogDescription>
           </DialogHeader>
           {detailLoading ? (
-            <div className="py-12 flex justify-center">
-              <Spinner size="lg" />
+            <div className="py-12 flex items-center justify-center">
+              <Spinner size="md" />
             </div>
+          ) : detailData?.data ? (
+            <ScanResult result={detailData.data} />
           ) : (
-            detailData && <ScanResult result={detailData} />
+            <p className="text-xs text-[#64748B] py-6 text-center">Unable to load scan details.</p>
           )}
         </DialogContent>
       </Dialog>
 
-      {/* Delete Confirmation Dialog */}
+      {/* Delete Confirmation Modal */}
       <Dialog open={!!deleteConfirmId} onOpenChange={(open) => !open && setDeleteConfirmId(null)}>
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2 text-red-400">
-              <AlertTriangle className="h-5 w-5" /> Confirm Deletion
-            </DialogTitle>
+            <DialogTitle>Delete Scan Record?</DialogTitle>
             <DialogDescription>
-              Are you sure you want to permanently remove this scan record from your audit history? This action cannot be reversed.
+              This action cannot be undone. This record and its associated detection findings will be permanently removed.
             </DialogDescription>
           </DialogHeader>
-          <div className="flex justify-end gap-3 mt-4">
-            <Button variant="ghost" size="sm" onClick={() => setDeleteConfirmId(null)}>
+          <div className="flex justify-end gap-3 pt-4">
+            <Button variant="outline" size="sm" onClick={() => setDeleteConfirmId(null)}>
               Cancel
             </Button>
             <Button
@@ -232,7 +295,7 @@ function HistoryPage() {
               disabled={deleteMutation.isPending}
               onClick={() => handleDelete(deleteConfirmId)}
             >
-              {deleteMutation.isPending ? 'Deleting...' : 'Delete Record'}
+              {deleteMutation.isPending ? 'Deleting...' : 'Confirm Delete'}
             </Button>
           </div>
         </DialogContent>

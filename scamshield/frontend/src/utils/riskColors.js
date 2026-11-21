@@ -8,64 +8,66 @@ export const RISK_LEVELS = {
 export function getRiskColor(level) {
   switch (level?.toLowerCase()) {
     case 'low':
-      return 'text-green-500'
+      return 'text-emerald-700'
     case 'moderate':
-      return 'text-yellow-500'
+      return 'text-amber-700'
     case 'high':
-      return 'text-orange-500'
+      return 'text-orange-700'
     case 'critical':
-      return 'text-red-500'
+      return 'text-rose-700'
     default:
-      return 'text-white/60'
+      return 'text-slate-600'
   }
 }
 
 export function getRiskBgColor(level) {
   switch (level?.toLowerCase()) {
     case 'low':
-      return 'bg-green-500/10 border-green-500/30 text-green-400'
+      return 'bg-emerald-50 border-emerald-200 text-emerald-800'
     case 'moderate':
-      return 'bg-yellow-500/10 border-yellow-500/30 text-yellow-400'
+      return 'bg-amber-50 border-amber-200 text-amber-800'
     case 'high':
-      return 'bg-orange-500/10 border-orange-500/30 text-orange-400'
+      return 'bg-orange-50 border-orange-200 text-orange-800'
     case 'critical':
-      return 'bg-red-500/10 border-red-500/30 text-red-400'
+      return 'bg-rose-50 border-rose-200 text-rose-800'
     default:
-      return 'bg-white/5 border-white/10 text-white/60'
+      return 'bg-slate-50 border-slate-200 text-slate-700'
   }
 }
 
 export function getRiskBarColor(level) {
   switch (level?.toLowerCase()) {
     case 'low':
-      return 'bg-green-500'
+      return 'bg-emerald-500'
     case 'moderate':
-      return 'bg-yellow-500'
+      return 'bg-amber-500'
     case 'high':
       return 'bg-orange-500'
     case 'critical':
-      return 'bg-red-500'
+      return 'bg-rose-500'
     default:
-      return 'bg-blue-500'
+      return 'bg-slate-400'
   }
 }
 
 export function getRiskLabel(level) {
-  if (!level) return 'Unknown'
-  return level.charAt(0).toUpperCase() + level.slice(1)
-}
-
-export function getScoreToLevel(score) {
-  if (score >= 75) return 'critical'
-  if (score >= 50) return 'high'
-  if (score >= 25) return 'moderate'
-  return 'low'
+  switch (level?.toLowerCase()) {
+    case 'low':
+      return 'Low Risk'
+    case 'moderate':
+      return 'Moderate Risk'
+    case 'high':
+      return 'High Risk'
+    case 'critical':
+      return 'Critical Risk'
+    default:
+      return 'Unknown'
+  }
 }
 
 export const RISK_CHART_COLORS = {
-  low: '#22c55e',
-  moderate: '#f59e0b',
-  high: '#f97316',
-  critical: '#ef4444',
+  low: '#10B981',
+  moderate: '#F59E0B',
+  high: '#F97316',
+  critical: '#EF4444',
 }
-

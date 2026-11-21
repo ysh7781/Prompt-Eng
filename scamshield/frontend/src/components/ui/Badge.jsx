@@ -3,16 +3,17 @@ import { cva } from 'class-variance-authority'
 import { cn } from '../../utils/cn.js'
 
 const badgeVariants = cva(
-  'inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors',
+  'inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium transition-colors',
   {
     variants: {
       variant: {
-        default: 'border-white/20 bg-white/10 text-white',
-        low: 'border-green-500/30 bg-green-500/10 text-green-400',
-        moderate: 'border-yellow-500/30 bg-yellow-500/10 text-yellow-400',
-        high: 'border-orange-500/30 bg-orange-500/10 text-orange-400',
-        critical: 'border-red-500/30 bg-red-500/10 text-red-400',
-        blue: 'border-blue-500/30 bg-blue-500/10 text-blue-400',
+        default: 'border-[#E5EDF5] bg-[#F4F9FF] text-[#172B4D]',
+        secondary: 'border-[#E5EDF5] bg-white text-[#64748B]',
+        low: 'border-emerald-200 bg-emerald-50 text-emerald-800',
+        moderate: 'border-amber-200 bg-amber-50 text-amber-800',
+        high: 'border-orange-200 bg-orange-50 text-orange-800',
+        critical: 'border-rose-200 bg-rose-50 text-rose-800',
+        neutral: 'border-[#E5EDF5] bg-[#EAF3FF] text-[#172B4D]',
       },
     },
     defaultVariants: {
@@ -26,4 +27,3 @@ function Badge({ className, variant, ...props }) {
 }
 
 export { Badge, badgeVariants }
-

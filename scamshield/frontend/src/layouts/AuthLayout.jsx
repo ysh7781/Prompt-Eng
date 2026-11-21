@@ -1,26 +1,75 @@
 import React from 'react'
 import { Outlet, Link } from 'react-router-dom'
-import { Shield } from 'lucide-react'
+import { Shield, CheckCircle2, Lock, ArrowUpRight } from 'lucide-react'
 
 function AuthLayout() {
   return (
-    <div className="min-h-screen bg-[#020817] flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden">
-      {/* Background glow effects */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
-      
-      <div className="sm:mx-auto sm:w-full sm:max-w-md relative z-10">
-        <Link to="/" className="flex items-center justify-center gap-2 mb-6">
-          <div className="p-2 rounded-xl bg-blue-600/20 border border-blue-500/30">
-            <Shield className="h-6 w-6 text-blue-400" />
+    <div className="min-h-screen auth-ambient-gradient flex flex-col justify-between p-6 sm:p-10">
+      {/* Top Header Logo */}
+      <div className="flex items-center justify-between max-w-6xl mx-auto w-full mb-6">
+        <Link to="/" className="flex items-center gap-2.5">
+          <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-white shadow-sm">
+            <Shield className="h-5 w-5 fill-white/20" />
           </div>
-          <span className="text-2xl font-bold text-white tracking-tight">ScamShield</span>
+          <span className="text-xl font-bold text-[#172B4D] tracking-tight">ScamShield</span>
+        </Link>
+        <Link
+          to="/"
+          className="text-xs font-medium text-[#64748B] hover:text-[#172B4D] flex items-center gap-1 transition-colors"
+        >
+          <span>Back to Home</span>
+          <ArrowUpRight className="h-3.5 w-3.5" />
         </Link>
       </div>
 
-      <div className="sm:mx-auto sm:w-full sm:max-w-md relative z-10 px-4 sm:px-0">
-        <div className="bg-[#0a1628] py-8 px-6 shadow-2xl border border-white/10 sm:rounded-2xl sm:px-10">
-          <Outlet />
+      {/* Main Split Body (Image 4 style) */}
+      <div className="flex-1 max-w-6xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-12 items-center my-auto py-6">
+        {/* Left Side: Value Proposition */}
+        <div className="lg:col-span-6 space-y-6 hidden lg:block pr-6">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/80 border border-[#E8EFF6] text-xs font-semibold text-[#2563EB] shadow-sm">
+            <Lock className="h-3.5 w-3.5" />
+            <span>Enterprise-Grade Fraud Defense</span>
+          </div>
+
+          <h1 className="text-4xl xl:text-5xl font-extrabold text-[#172B4D] tracking-tight leading-[1.15]">
+            Fast, Efficient and Protective.
+          </h1>
+
+          <p className="text-base text-[#64748B] leading-relaxed max-w-md">
+            ScamShield automatically inspects SMS, messaging links, and payment verification requests to shield you from evolving cyber fraud in real-time.
+          </p>
+
+          <div className="space-y-3 pt-2">
+            {[
+              'Explainable AI risk scoring with pinpoint rule triggers',
+              'Deterministic heuristics with 0% false credential collection',
+              'Real-time phishing URL detection & domain spoof analyzer',
+            ].map((feature) => (
+              <div key={feature} className="flex items-center gap-3">
+                <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
+                <span className="text-sm font-medium text-[#2D3F5D]">{feature}</span>
+              </div>
+            ))}
+          </div>
         </div>
+
+        {/* Right Side: Floating Pure White Card (Image 4 style) */}
+        <div className="lg:col-span-6 flex justify-center lg:justify-end">
+          <div className="w-full max-w-md bg-white rounded-3xl shadow-[0_20px_50px_rgba(23,43,77,0.08)] border border-[#E8EFF6] p-8 sm:p-10">
+            <Outlet />
+          </div>
+        </div>
+      </div>
+
+      {/* Footer Links (Image 4 style) */}
+      <div className="max-w-6xl mx-auto w-full pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-[#64748B] gap-4">
+        <div className="flex items-center gap-6">
+          <span className="font-medium text-[#172B4D]">English (US)</span>
+          <Link to="/" className="hover:text-[#172B4D] transition-colors">Terms of Service</Link>
+          <Link to="/" className="hover:text-[#172B4D] transition-colors">Privacy Policy</Link>
+          <Link to="/" className="hover:text-[#172B4D] transition-colors">Contact Support</Link>
+        </div>
+        <p>© 2026 ScamShield Security. All rights reserved.</p>
       </div>
     </div>
   )
