@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 68" fill="none" stroke="#0265DC" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Left Lens -->
+  <circle cx="31" cy="43.5" r="16" stroke-width="5.5" />
+  <!-- Right Lens -->
+  <circle cx="69" cy="43.5" r="16" stroke-width="5.5" />
+  <!-- Nose Bridge -->
+  <path d="M 47 40 C 48.5 36, 51.5 36, 53 40" stroke-width="5.5" />
+  <!-- Left Temple Arm -->
+  <path d="M 15.5 37 C 13.5 23, 17 14, 30 9.5" stroke-width="5.5" />
+  <!-- Right Temple Arm -->
+  <path d="M 84.5 37 C 86.5 23, 83 14, 70 9.5" stroke-width="5.5" />
+</svg>

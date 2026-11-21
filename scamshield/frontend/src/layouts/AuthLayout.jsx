@@ -7,11 +7,9 @@ function AuthLayout() {
     <div className="min-h-screen auth-ambient-gradient flex flex-col justify-between p-6 sm:p-10">
       {/* Top Header Logo */}
       <div className="flex items-center justify-between max-w-6xl mx-auto w-full mb-6">
-        <Link to="/" className="flex items-center gap-2.5">
-          <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-white shadow-sm">
-            <Shield className="h-5 w-5 fill-white/20" />
-          </div>
-          <span className="text-xl font-bold text-[#172B4D] tracking-tight">ScamShield</span>
+        <Link to="/" className="flex items-center gap-3">
+          <img src="/goggles-clean.png" alt="ScamShield Logo" className="h-11 w-auto object-contain shrink-0" />
+          <span className="text-2xl font-bold text-[#172B4D] tracking-tight">ScamShield</span>
         </Link>
         <Link
           to="/"

@@ -10,9 +10,9 @@ function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-10 pb-12 border-b border-neutral-200/80">
           {/* Brand Info */}
           <div className="md:col-span-5 space-y-4">
-            <div className="flex items-center gap-2.5">
-              <ScamShieldLogoMark className="h-8 w-8" />
-              <span className="font-nunito text-xl font-black text-neutral-900 tracking-tight">
+            <div className="flex items-center gap-3">
+              <ScamShieldLogoMark className="h-10 w-auto" />
+              <span className="font-nunito text-2xl font-black text-neutral-900 tracking-tight">
                 Scam<span className="text-brand">Shield</span>
               </span>
             </div>

@@ -136,10 +136,8 @@ function LandingPage() {
 
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center">
           {/* Eyebrow Pill */}
-          <div className="inline-flex items-center gap-2 rounded-full border border-neutral-200/80 bg-white px-3.5 py-1 text-xs font-semibold text-neutral-700 shadow-sm mb-6">
-            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-tint-blue text-brand">
-              <Shield className="h-3 w-3" />
-            </span>
+          <div className="inline-flex items-center gap-2.5 rounded-full border border-neutral-200/80 bg-white px-4 py-1.5 text-xs font-semibold text-neutral-700 shadow-sm mb-6">
+            <img src="/goggles-clean.png" alt="ScamShield Logo" className="h-5 sm:h-6 w-auto object-contain shrink-0" />
             <span>Official Digital Safety Initiative</span>
           </div>
 
@@ -256,8 +254,8 @@ function LandingPage() {
                 {/* Chat Top Bar */}
                 <div className="bg-[#075E54] text-white px-3 py-2.5 flex items-center justify-between shrink-0 shadow-sm">
                   <div className="flex items-center gap-2">
-                    <div className="h-7 w-7 rounded-full bg-white/20 flex items-center justify-center text-xs font-bold text-white">
-                      🛡️
+                    <div className="h-8 w-8 rounded-full bg-white/95 flex items-center justify-center p-1 shadow-sm shrink-0">
+                      <img src="/goggles-clean.png" alt="ScamShield" className="w-full h-full object-contain" />
                     </div>
                     <div>
                       <p className="font-nunito text-xs font-bold leading-tight">ScamShield</p>
@@ -339,10 +337,10 @@ function LandingPage() {
             {/* Bottom-Right Floating Card (TRUSTED INITIATIVE) */}
             <div className="absolute bottom-6 right-3 sm:right-8 lg:right-14 z-20 w-[240px] sm:w-[265px] -rotate-1 animate-float-1 text-left">
               <div className="rounded-2xl border border-neutral-200/80 bg-white/95 p-3.5 sm:p-4 shadow-floating backdrop-blur-md hover:-translate-y-1 transition-transform">
-                <div className="flex items-start gap-3">
-                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-tint-blue text-brand">
-                    <Shield className="h-4.5 w-4.5" />
-                  </span>
+                <div className="flex items-start gap-3.5">
+                  <div className="shrink-0 pt-0.5">
+                    <img src="/goggles-clean.png" alt="ScamShield Goggles" className="h-11 sm:h-12 w-auto object-contain drop-shadow-sm" />
+                  </div>
                   <div>
                     <span className="text-[9px] font-bold tracking-wider text-brand uppercase block">
                       TRUSTED INITIATIVE

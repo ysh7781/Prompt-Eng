@@ -3,29 +3,13 @@ import { Link, useNavigate } from 'react-router-dom'
 import { Shield, Menu, X, User, LogOut, ChevronDown, ArrowRight } from 'lucide-react'
 import { useAuth } from '../../hooks/useAuth.js'
 
-export function ScamShieldLogoMark({ className = 'h-8 w-8' }) {
+export function ScamShieldLogoMark({ className = 'h-10 w-auto', alt = 'ScamShield Logo' }) {
   return (
-    <div className={`relative flex items-center justify-center shrink-0 rounded-2xl bg-tint-blue text-brand p-1.5 ${className}`}>
-      <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-        {/* Shield with fingerprint/circuit lines */}
-        <path
-          d="M16 3.5L26 7.5V14.5C26 21.5 21.5 26.5 16 28.5C10.5 26.5 6 21.5 6 14.5V7.5L16 3.5Z"
-          fill="url(#logoGrad)"
-          stroke="#0265DC"
-          strokeWidth="1.5"
-          strokeLinejoin="round"
-        />
-        <path d="M12 14C12 11.7909 13.7909 10 16 10C18.2091 10 20 11.7909 20 14V17" stroke="#FFFFFF" strokeWidth="1.5" strokeLinecap="round" />
-        <path d="M14 17C14 15.8954 14.8954 15 16 15C17.1046 15 18 15.8954 18 17V19" stroke="#FFFFFF" strokeWidth="1.5" strokeLinecap="round" />
-        <circle cx="16" cy="22" r="1" fill="#FFFFFF" />
-        <defs>
-          <linearGradient id="logoGrad" x1="6" y1="3.5" x2="26" y2="28.5" gradientUnits="userSpaceOnUse">
-            <stop stopColor="#14C4F4" />
-            <stop offset="1" stopColor="#0265DC" />
-          </linearGradient>
-        </defs>
-      </svg>
-    </div>
+    <img
+      src="/goggles-clean.png"
+      alt={alt}
+      className={`shrink-0 object-contain select-none transition-transform group-hover:scale-105 ${className}`}
+    />
   )
 }
 
@@ -44,10 +28,10 @@ function Navbar() {
     <header className="sticky top-0 z-50 px-3 pt-3">
       <div className="mx-auto flex h-fit w-full max-w-7xl items-center justify-between rounded-full border border-neutral-200/70 bg-white/80 pr-4 pl-4 py-2 shadow-sm shadow-neutral-950/5 backdrop-blur-xl md:pl-6">
         {/* Brand Logo */}
-        <Link to="/" className="flex items-center gap-2.5 group">
-          <ScamShieldLogoMark className="h-9 w-9" />
+        <Link to="/" className="flex items-center gap-3 group">
+          <ScamShieldLogoMark className="h-10 sm:h-11 w-auto" />
           <div className="flex flex-col">
-            <span className="font-nunito text-lg sm:text-xl font-black tracking-tight text-neutral-900 leading-none">
+            <span className="font-nunito text-xl sm:text-2xl font-black tracking-tight text-neutral-900 leading-none">
               Scam<span className="text-brand">Shield</span>
             </span>
           </div>
