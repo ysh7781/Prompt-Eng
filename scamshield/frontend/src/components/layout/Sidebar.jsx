@@ -41,9 +41,9 @@ function Sidebar({ onCloseMobile }) {
     <aside className="flex flex-col h-full w-[270px] bg-white/80 backdrop-blur-md border-r border-[#E8EFF6] p-4 select-none">
       {/* Brand Header */}
       <div className="flex items-center gap-3 px-2 py-2 mb-4">
-        <img src="/goggles-clean.png" alt="ScamShield Logo" className="h-10 w-auto object-contain shrink-0" />
+        <img src="/goggles-clean.png" alt="ScamLens Logo" className="h-10 w-auto object-contain shrink-0" />
         <div>
-          <span className="text-base font-bold text-[#172B4D] tracking-tight block">ScamShield</span>
+          <span className="text-base font-bold text-[#172B4D] tracking-tight block">ScamLens</span>
           <span className="text-[11px] font-medium text-[#64748B] block">Security Suite</span>
         </div>
       </div>

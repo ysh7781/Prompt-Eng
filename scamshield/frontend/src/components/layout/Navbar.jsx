@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { Shield, Menu, X, User, LogOut, ChevronDown, ArrowRight } from 'lucide-react'
 import { useAuth } from '../../hooks/useAuth.js'
 
-export function ScamShieldLogoMark({ className = 'h-10 w-auto', alt = 'ScamShield Logo' }) {
+export function ScamLensLogoMark({ className = 'h-10 w-auto', alt = 'ScamLens Logo' }) {
   return (
     <img
       src="/goggles-clean.png"
@@ -12,6 +12,7 @@ export function ScamShieldLogoMark({ className = 'h-10 w-auto', alt = 'ScamShiel
     />
   )
 }
+
 
 function Navbar() {
   const { isAuthenticated, user, logout } = useAuth()
@@ -29,18 +30,18 @@ function Navbar() {
       <div className="mx-auto flex h-fit w-full max-w-7xl items-center justify-between rounded-full border border-neutral-200/70 bg-white/80 pr-4 pl-4 py-2 shadow-sm shadow-neutral-950/5 backdrop-blur-xl md:pl-6">
         {/* Brand Logo */}
         <Link to="/" className="flex items-center gap-3 group">
-          <ScamShieldLogoMark className="h-10 sm:h-11 w-auto" />
+          <ScamLensLogoMark className="h-10 sm:h-11 w-auto" />
           <div className="flex flex-col">
             <span className="font-nunito text-xl sm:text-2xl font-black tracking-tight text-neutral-900 leading-none">
-              Scam<span className="text-brand">Shield</span>
+              Scam<span className="text-brand">Lens</span>
             </span>
           </div>
         </Link>
 
         {/* Center Desktop Navigation */}
         <nav className="hidden items-center gap-7 md:flex text-sm font-semibold text-neutral-600">
-          <a href="#why-scamshield" className="transition-colors hover:text-brand">
-            Why ScamShield
+          <a href="#why-scamlens" className="transition-colors hover:text-brand">
+            Why ScamLens
           </a>
           <a href="#how-it-works" className="transition-colors hover:text-brand">
             How it Works
@@ -139,11 +140,11 @@ function Navbar() {
       {mobileMenuOpen && (
         <div className="md:hidden mt-2 mx-auto max-w-7xl rounded-2xl border border-neutral-100 bg-white/95 backdrop-blur-xl p-4 shadow-xl space-y-2">
           <a
-            href="#why-scamshield"
+            href="#why-scamlens"
             onClick={() => setMobileMenuOpen(false)}
             className="block rounded-xl px-3 py-2 text-sm font-semibold text-neutral-700 hover:bg-tint-blue hover:text-brand"
           >
-            Why ScamShield
+            Why ScamLens
           </a>
           <a
             href="#how-it-works"

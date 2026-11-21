@@ -1,10 +1,10 @@
-# ScamShield 🛡️
+# ScamLens 🔍
 
 A full-stack cybersecurity web application that uses rule-based detection to identify phishing messages and malicious URLs.
 
 ## Overview
 
-ScamShield allows users to submit suspicious SMS messages or URLs for analysis. The backend applies a layered detection engine — keyword matching, URL analysis, and structural heuristics — to compute a risk score and surface actionable findings.
+ScamLens allows users to submit suspicious SMS messages or URLs for analysis. The backend applies a layered detection engine — keyword matching, URL analysis, and structural heuristics — to compute a risk score and surface actionable findings.
 
 ## Tech Stack
 

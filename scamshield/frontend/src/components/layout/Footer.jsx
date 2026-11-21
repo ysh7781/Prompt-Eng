@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { Phone, Shield, ArrowUpRight } from 'lucide-react'
-import { ScamShieldLogoMark } from './Navbar.jsx'
+import { ScamLensLogoMark } from './Navbar.jsx'
 
 function Footer() {
   return (
@@ -21,9 +21,9 @@ function Footer() {
           {/* Brand Info */}
           <div className="md:col-span-5 space-y-4">
             <div className="flex items-center gap-3">
-              <ScamShieldLogoMark className="h-10 w-auto drop-shadow-[0_0_12px_rgba(37,99,235,0.45)]" />
+              <ScamLensLogoMark className="h-10 w-auto drop-shadow-[0_0_12px_rgba(37,99,235,0.45)]" />
               <span className="font-nunito text-2xl font-black text-white tracking-tight">
-                Scam<span className="text-blue-400">Shield</span>
+                Scam<span className="text-blue-400">Lens</span>
               </span>
             </div>
             <p className="text-xs sm:text-sm text-slate-300 max-w-sm leading-relaxed">
@@ -43,7 +43,7 @@ function Footer() {
               Platform
             </h4>
             <ul className="space-y-2 text-xs font-medium">
-              <li><a href="#why-scamshield" className="text-slate-300 hover:text-blue-400 transition-colors">Why ScamShield</a></li>
+              <li><a href="#why-scamlens" className="text-slate-300 hover:text-blue-400 transition-colors">Why ScamLens</a></li>
               <li><a href="#how-it-works" className="text-slate-300 hover:text-blue-400 transition-colors">How it Works</a></li>
               <li><a href="#engine" className="text-slate-300 hover:text-blue-400 transition-colors">Security Engine</a></li>
               <li><a href="#faq" className="text-slate-300 hover:text-blue-400 transition-colors">FAQ</a></li>
@@ -86,7 +86,7 @@ function Footer() {
 
         {/* Bottom Credits */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
-          <p>© {new Date().getFullYear()} ScamShield. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} ScamLens. All rights reserved.</p>
           <div className="flex items-center gap-6">
             <a href="#faq" className="hover:text-slate-200 transition-colors">Privacy Policy</a>
             <a href="#faq" className="hover:text-slate-200 transition-colors">Terms of Service</a>

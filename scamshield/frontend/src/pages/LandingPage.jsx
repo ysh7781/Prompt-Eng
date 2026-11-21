@@ -101,16 +101,16 @@ function LandingPage() {
 
   const faqs = [
     {
-      q: 'Is ScamShield free to use?',
-      a: 'Yes. ScamShield is a free public digital safety platform — there are no charges, subscriptions, or hidden fees to verify messages or URLs.',
+      q: 'Is ScamLens free to use?',
+      a: 'Yes. ScamLens is a free public digital safety platform — there are no charges, subscriptions, or hidden fees to verify messages or URLs.',
     },
     {
       q: 'Can I just paste an SMS or forward a WhatsApp alert?',
-      a: 'Yes! Simply copy the text of any suspicious message or email and paste it into ScamShield. Our heuristic engine analyzes the content in milliseconds.',
+      a: 'Yes! Simply copy the text of any suspicious message or email and paste it into ScamLens. Our heuristic engine analyzes the content in milliseconds.',
     },
     {
-      q: 'Does ScamShield store my personal information or passwords?',
-      a: 'No. ScamShield operates a strict privacy-preserving architecture. We do not extract or retain passwords, OTPs, or private banking secrets.',
+      q: 'Does ScamLens store my personal information or passwords?',
+      a: 'No. ScamLens operates a strict privacy-preserving architecture. We do not extract or retain passwords, OTPs, or private banking secrets.',
     },
     {
       q: 'How does the Trust Score work?',
@@ -137,7 +137,7 @@ function LandingPage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center">
           {/* Eyebrow Pill */}
           <div className="inline-flex items-center gap-2.5 rounded-full border border-neutral-200/80 bg-white px-4 py-1.5 text-xs font-semibold text-neutral-700 shadow-sm mb-6">
-            <img src="/goggles-clean.png" alt="ScamShield Logo" className="h-5 sm:h-6 w-auto object-contain shrink-0" />
+            <img src="/goggles-clean.png" alt="ScamLens Logo" className="h-5 sm:h-6 w-auto object-contain shrink-0" />
             <span>Official Digital Safety Initiative</span>
           </div>
 
@@ -149,7 +149,7 @@ function LandingPage() {
 
           {/* Subheading */}
           <p className="mt-4 font-nunito text-base sm:text-lg font-bold text-neutral-800">
-            ScamShield's AI-powered digital safety assistant.
+            ScamLens's AI-powered digital safety assistant.
           </p>
 
           <p className="mt-2 text-xs sm:text-sm text-neutral-500 max-w-xl mx-auto leading-relaxed">
@@ -255,10 +255,10 @@ function LandingPage() {
                 <div className="bg-[#075E54] text-white px-3 py-2.5 flex items-center justify-between shrink-0 shadow-sm">
                   <div className="flex items-center gap-2">
                     <div className="h-8 w-8 rounded-full bg-white/95 flex items-center justify-center p-1 shadow-sm shrink-0">
-                      <img src="/goggles-clean.png" alt="ScamShield" className="w-full h-full object-contain" />
+                      <img src="/goggles-clean.png" alt="ScamLens" className="w-full h-full object-contain" />
                     </div>
                     <div>
-                      <p className="font-nunito text-xs font-bold leading-tight">ScamShield</p>
+                      <p className="font-nunito text-xs font-bold leading-tight">ScamLens</p>
                       <p className="text-[9px] text-emerald-200 leading-tight">Online Assistant</p>
                     </div>
                   </div>
@@ -284,7 +284,7 @@ function LandingPage() {
                     </div>
                   </div>
 
-                  {/* ScamShield AI Bubble (Left) */}
+                  {/* ScamLens AI Bubble (Left) */}
                   <div className="mr-auto max-w-[95%] rounded-lg rounded-tl-none bg-white p-2.5 shadow-sm space-y-1.5 text-neutral-800">
                     <p className="text-[10px] leading-snug">
                       <strong className="text-rose-600 font-bold">This message is a scam</strong> and you should definitely not interact with it. The website link you were sent has a <strong className="text-rose-600">trust score of 18 out of 100</strong>, which is very low and indicates it is dangerous.
@@ -327,7 +327,7 @@ function LandingPage() {
                       40+ validations and checks
                     </h4>
                     <p className="text-[11px] text-neutral-500 mt-1 leading-snug">
-                      ScamShield examines technical, behavioural, identity, and threat intelligence signals.
+                      ScamLens examines technical, behavioural, identity, and threat intelligence signals.
                     </p>
                   </div>
                 </div>
@@ -339,7 +339,7 @@ function LandingPage() {
               <div className="rounded-2xl border border-neutral-200/80 bg-white/95 p-3.5 sm:p-4 shadow-floating backdrop-blur-md hover:-translate-y-1 transition-transform">
                 <div className="flex items-start gap-3.5">
                   <div className="shrink-0 pt-0.5">
-                    <img src="/goggles-clean.png" alt="ScamShield Goggles" className="h-11 sm:h-12 w-auto object-contain drop-shadow-sm" />
+                    <img src="/goggles-clean.png" alt="ScamLens Goggles" className="h-11 sm:h-12 w-auto object-contain drop-shadow-sm" />
                   </div>
                   <div>
                     <span className="text-[9px] font-bold tracking-wider text-brand uppercase block">
@@ -359,18 +359,18 @@ function LandingPage() {
         </div>
       </section>
 
-      {/* ── 2. SECTION: WHY SCAMSHIELD (#why-scamshield) ── */}
-      <section id="why-scamshield" className="py-20 sm:py-28 bg-[#F8FAFC] border-t border-b border-neutral-200/80">
+      {/* ── 2. SECTION: WHY SCAMLENS (#why-scamlens) ── */}
+      <section id="why-scamlens" className="py-20 sm:py-28 bg-[#F8FAFC] border-t border-b border-neutral-200/80">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-16">
             <span className="text-xs font-bold uppercase tracking-wider text-brand">
-              Why ScamShield
+              Why ScamLens
             </span>
             <h2 className="font-nunito text-3xl sm:text-5xl font-black text-neutral-900 tracking-tight mt-2">
-              Scams keep changing. ScamShield keeps you one step ahead.
+              Scams keep changing. ScamLens keeps you one step ahead.
             </h2>
             <p className="text-sm sm:text-base text-neutral-600 mt-3 leading-relaxed">
-              Modern scams appear across different channels. ScamShield helps you verify suspicious information before you trust it.
+              Modern scams appear across different channels. ScamLens helps you verify suspicious information before you trust it.
             </p>
           </div>
 
@@ -423,7 +423,7 @@ function LandingPage() {
                   Verify before you act.
                 </h3>
                 <p className="text-sm text-white/80 leading-relaxed">
-                  ScamShield sits between the incoming message and your next action. Run any message, payment handle, or URL through our engine to get an immediate Trust Score before clicking.
+                  ScamLens sits between the incoming message and your next action. Run any message, payment handle, or URL through our engine to get an immediate Trust Score before clicking.
                 </p>
               </div>
               <div className="relative z-10 pt-6 mt-6 border-t border-white/20 flex items-center justify-between">
@@ -442,13 +442,13 @@ function LandingPage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-16">
             <span className="text-xs font-bold uppercase tracking-wider text-brand">
-              How ScamShield intercepts scams
+              How ScamLens intercepts scams
             </span>
             <h2 className="font-nunito text-3xl sm:text-5xl font-black text-neutral-900 tracking-tight mt-2">
               From suspicion to a safe decision
             </h2>
             <p className="text-sm sm:text-base text-neutral-600 mt-3 leading-relaxed">
-              ScamShield sits between the suspicious interaction and your next action, helping you verify the risk before damage is done.
+              ScamLens sits between the suspicious interaction and your next action, helping you verify the risk before damage is done.
             </p>
           </div>
 
@@ -466,7 +466,7 @@ function LandingPage() {
               },
               {
                 step: '03',
-                title: 'ScamShield checks the threat',
+                title: 'ScamLens checks the threat',
                 desc: 'Over 35 security validations inspect domains, keyword triggers, homographs, and spoofing.',
               },
               {
@@ -504,7 +504,7 @@ function LandingPage() {
               Send whatever you're unsure about.
             </h2>
             <p className="text-sm text-neutral-600 mt-2">
-              ScamShield understands what you're trying to verify across all major input formats.
+              ScamLens understands what you're trying to verify across all major input formats.
             </p>
           </div>
 
@@ -584,7 +584,7 @@ function LandingPage() {
               Ask naturally. Try a live verification.
             </h2>
             <p className="text-xs sm:text-sm text-neutral-600 mt-2">
-              Paste any suspicious message or choose a quick sample below to see the ScamShield engine in action.
+              Paste any suspicious message or choose a quick sample below to see the ScamLens engine in action.
             </p>
           </div>
 
@@ -872,7 +872,7 @@ function LandingPage() {
       <section className="py-20 sm:py-24 bg-[#F8FAFC]">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center space-y-6">
           <h2 className="font-nunito text-3xl sm:text-5xl font-black text-neutral-900 tracking-tight">
-            Ask ScamShield before you trust.
+            Ask ScamLens before you trust.
           </h2>
           <p className="text-sm sm:text-base text-neutral-600 max-w-lg mx-auto leading-relaxed">
             Free, official, and always a message away. Verify suspicious messages and links in seconds.

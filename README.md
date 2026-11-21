@@ -1,4 +1,4 @@
-# ScamShield — Explainable Cybersecurity & Threat Intelligence Platform
+# ScamLens — Explainable Cybersecurity & Threat Intelligence Platform
 
 [![Backend CI](https://img.shields.io/badge/Rust-1.75+-black?style=flat&logo=rust)](https://www.rust-lang.org/)
 [![Axum](https://img.shields.io/badge/Axum-0.7-orange?style=flat)](https://github.com/tokio-rs/axum)
@@ -7,7 +7,7 @@
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-38bdf8?style=flat&logo=tailwind-css)](https://tailwindcss.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
-**ScamShield** is a production-grade cybersecurity platform engineered to identify and neutralize fraudulent SMS messages, WhatsApp notices, phishing URLs, and credential harvesting schemes. Unlike black-box scanners that return vague ratings, ScamShield evaluates every submission against a deterministic, multi-tier heuristic detection engine with fully explainable risk factors.
+**ScamLens** is a production-grade cybersecurity platform engineered to identify and neutralize fraudulent SMS messages, WhatsApp notices, phishing URLs, and credential harvesting schemes. Unlike black-box scanners that return vague ratings, ScamLens evaluates every submission against a deterministic, multi-tier heuristic detection engine with fully explainable risk factors.
 
 ---
 
@@ -147,7 +147,7 @@ npm run test
 
 - **Argon2id Hashing**: High memory/time cost configuration preventing brute-force dictionary attacks.
 - **Stateless JWTs + Hashed Refresh Tokens**: Secure token rotation with SHA-256 stored refresh hashes.
-- **Zero-Execution URL Inspection**: ScamShield analyzes link structures without initiating HTTP socket connections to malicious targets, protecting users and servers from drive-by payloads.
+- **Zero-Execution URL Inspection**: ScamLens analyzes link structures without initiating HTTP socket connections to malicious targets, protecting users and servers from drive-by payloads.
 - **Privacy Assurance**: Sensitive credentials (passwords, OTPs) are never indexed or logged in plain text.
 - **Strict Role-Based Access Control (RBAC)**: Fine-grained middleware authorization separates standard users from detection rule engine administrators.
 

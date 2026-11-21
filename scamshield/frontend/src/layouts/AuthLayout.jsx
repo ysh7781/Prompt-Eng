@@ -8,8 +8,8 @@ function AuthLayout() {
       {/* Top Header Logo */}
       <div className="flex items-center justify-between max-w-6xl mx-auto w-full mb-6">
         <Link to="/" className="flex items-center gap-3">
-          <img src="/goggles-clean.png" alt="ScamShield Logo" className="h-11 w-auto object-contain shrink-0" />
-          <span className="text-2xl font-bold text-[#172B4D] tracking-tight">ScamShield</span>
+          <img src="/goggles-clean.png" alt="ScamLens Logo" className="h-11 w-auto object-contain shrink-0" />
+          <span className="text-2xl font-bold text-[#172B4D] tracking-tight">ScamLens</span>
         </Link>
         <Link
           to="/"
@@ -34,7 +34,7 @@ function AuthLayout() {
           </h1>
 
           <p className="text-base text-[#64748B] leading-relaxed max-w-md">
-            ScamShield automatically inspects SMS, messaging links, and payment verification requests to shield you from evolving cyber fraud in real-time.
+            ScamLens automatically inspects SMS, messaging links, and payment verification requests to shield you from evolving cyber fraud in real-time.
           </p>
 
           <div className="space-y-3 pt-2">
@@ -67,7 +67,7 @@ function AuthLayout() {
           <Link to="/" className="hover:text-[#172B4D] transition-colors">Privacy Policy</Link>
           <Link to="/" className="hover:text-[#172B4D] transition-colors">Contact Support</Link>
         </div>
-        <p>© 2026 ScamShield Security. All rights reserved.</p>
+        <p>© 2026 ScamLens Security. All rights reserved.</p>
       </div>
     </div>
   )

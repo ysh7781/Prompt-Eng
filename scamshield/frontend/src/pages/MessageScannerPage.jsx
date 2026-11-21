@@ -57,7 +57,7 @@ function MessageScannerPage() {
             Message Security Scanner
           </h1>
           <p className="text-xs sm:text-sm text-[#64748B] mt-0.5">
-            Powered by ScamShield AI Detection Engine
+            Powered by ScamLens AI Detection Engine
           </p>
         </div>
       </div>

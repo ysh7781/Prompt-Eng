@@ -5,7 +5,7 @@ import { useAuth } from '../../hooks/useAuth.js'
 
 const PAGE_TITLES = {
   '/dashboard': { title: 'Dashboard', sub: 'Monitor threats and security metrics in real time' },
-  '/scanner/message': { title: 'Message Security Scanner', sub: 'Powered by ScamShield AI Detection Engine' },
+  '/scanner/message': { title: 'Message Security Scanner', sub: 'Powered by ScamLens AI Detection Engine' },
   '/scanner/url': { title: 'URL Security Scanner', sub: 'Inspect links safely before visiting' },
   '/history': { title: 'Scan History', sub: 'Audit log of all analyzed communications' },
   '/profile': { title: 'Profile & Settings', sub: 'Manage account security and preferences' },
@@ -18,7 +18,7 @@ function TopNav({ onToggleMobile }) {
   const { user, logout } = useAuth()
   const [dropdownOpen, setDropdownOpen] = useState(false)
 
-  const pageInfo = PAGE_TITLES[location.pathname] || { title: 'ScamShield', sub: 'Cybersecurity Dashboard' }
+  const pageInfo = PAGE_TITLES[location.pathname] || { title: 'ScamLens', sub: 'Cybersecurity Dashboard' }
 
   const handleLogout = async () => {
     await logout()
