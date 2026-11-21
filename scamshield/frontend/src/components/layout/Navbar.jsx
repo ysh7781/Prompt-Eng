@@ -118,7 +118,7 @@ function Navbar() {
               </Link>
               <Link
                 to="/scanner/message"
-                className="brand-gradient rounded-full px-5 py-2 text-xs sm:text-sm font-bold text-white shadow-sm shadow-brand/25 transition-all hover:opacity-90 hover:shadow-md"
+                className="brand-gradient shrink-0 rounded-full px-4 sm:px-5 py-2 text-xs sm:text-sm font-bold text-white shadow-sm shadow-brand/25 transition-all hover:opacity-90 hover:shadow-md"
               >
                 Try Now
               </Link>
@@ -127,29 +127,57 @@ function Navbar() {
 
           {/* Mobile Animated Hamburger Button */}
           <button
+            type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden relative flex h-9 w-9 items-center justify-center rounded-full bg-tint-blue text-brand hover:bg-blue-100/70 focus:outline-none transition-colors"
+            className="md:hidden relative flex shrink-0 h-9 w-9 items-center justify-center rounded-full bg-tint-blue text-brand hover:bg-blue-100/70 focus:outline-none transition-colors"
             aria-label="Toggle Menu"
             aria-expanded={mobileMenuOpen}
           >
             <span className="sr-only">Toggle navigation menu</span>
-            <div className="relative flex flex-col items-center justify-center w-4 h-4">
-              <span
-                className={`block h-0.5 w-4 rounded-full bg-brand transition-all duration-300 ease-in-out ${
-                  mobileMenuOpen ? 'rotate-45 translate-y-1' : '-translate-y-1'
-                }`}
+            <svg
+              className="h-5 w-5 text-brand"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#0265DC"
+              strokeWidth="2.3"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <line
+                x1="4"
+                y1="6"
+                x2="20"
+                y2="6"
+                style={{
+                  transformOrigin: '12px 12px',
+                  transform: mobileMenuOpen ? 'translateY(6px) rotate(45deg)' : 'none',
+                  transition: 'all 0.3s ease-in-out',
+                }}
               />
-              <span
-                className={`block h-0.5 w-4 rounded-full bg-brand transition-all duration-200 ease-in-out ${
-                  mobileMenuOpen ? 'opacity-0 scale-x-0' : 'opacity-100 my-0.5'
-                }`}
+              <line
+                x1="4"
+                y1="12"
+                x2="20"
+                y2="12"
+                style={{
+                  transformOrigin: '12px 12px',
+                  opacity: mobileMenuOpen ? 0 : 1,
+                  transform: mobileMenuOpen ? 'scaleX(0)' : 'none',
+                  transition: 'all 0.2s ease-in-out',
+                }}
               />
-              <span
-                className={`block h-0.5 w-4 rounded-full bg-brand transition-all duration-300 ease-in-out ${
-                  mobileMenuOpen ? '-rotate-45 -translate-y-1' : 'translate-y-1'
-                }`}
+              <line
+                x1="4"
+                y1="18"
+                x2="20"
+                y2="18"
+                style={{
+                  transformOrigin: '12px 12px',
+                  transform: mobileMenuOpen ? 'translateY(-6px) rotate(-45deg)' : 'none',
+                  transition: 'all 0.3s ease-in-out',
+                }}
               />
-            </div>
+            </svg>
           </button>
         </div>
       </div>

@@ -39,6 +39,10 @@
   background-color: #E8F2FD;
 }
 
+.bg-brand {
+  background-color: #0265DC;
+}
+
 .text-brand {
   color: #0265DC;
 }

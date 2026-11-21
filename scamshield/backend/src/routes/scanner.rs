@@ -11,14 +11,21 @@ use crate::{
 };
 
 pub fn router(state: AppState) -> Router {
-    Router::new()
+    let protected = Router::new()
         .route("/analyze", post(scanner_handler::analyze))
         .route("/message", post(scanner_handler::scan_message))
         .route("/url", post(scanner_handler::scan_url))
         .route_layer(middleware::from_fn_with_state(
             state.clone(),
             auth_required,
-        ))
+        ));
+
+    let public = Router::new()
+        .route("/demo", post(scanner_handler::demo_scan));
+
+    Router::new()
+        .merge(public)
+        .merge(protected)
         .with_state(state)
 }
 
@@ -101,6 +108,22 @@ mod tests {
 
         let res = app.oneshot(req).await.unwrap();
         assert_eq!(res.status(), StatusCode::UNAUTHORIZED);
+    }
+
+    #[tokio::test]
+    async fn test_scanner_demo_success_without_token() {
+        let state = create_test_state();
+        let app = router(state);
+
+        let req = Request::builder()
+            .uri("/demo")
+            .method("POST")
+            .header("Content-Type", "application/json")
+            .body(Body::from(r#"{"input":"Dear Customer, urgent kyc update needed at http://192.168.1.1/kyc","input_type":"message"}"#))
+            .unwrap();
+
+        let res = app.oneshot(req).await.unwrap();
+        assert_eq!(res.status(), StatusCode::OK);
     }
 }
 

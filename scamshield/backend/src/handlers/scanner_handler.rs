@@ -80,3 +80,41 @@ pub async fn get_history(
     Ok(Json(response))
 }
 
+pub async fn demo_scan(
+    Json(req): Json<ScanRequest>,
+) -> AppResult<impl IntoResponse> {
+    req.validate()
+        .map_err(|e| AppError::ValidationError(e.to_string()))?;
+
+    let analyzer = crate::detection::Analyzer::new();
+    let result = match req.input_type {
+        InputType::Message => analyzer.analyze_message(&req.input),
+        InputType::Url => analyzer.analyze_url(&req.input),
+    };
+
+    let finding_responses: Vec<crate::dto::scanner_dto::FindingResponse> = result
+        .findings
+        .into_iter()
+        .map(|f| crate::dto::scanner_dto::FindingResponse {
+            rule_code: f.rule_code,
+            category: f.category,
+            description: f.description,
+            severity: f.severity,
+            score_contribution: f.score_contribution,
+            evidence: f.evidence,
+        })
+        .collect();
+
+    let response = crate::dto::scanner_dto::ScanResponse {
+        id: uuid::Uuid::new_v4(),
+        input_type: req.input_type.as_str().to_string(),
+        risk_score: result.score,
+        risk_level: result.risk_level,
+        findings: finding_responses,
+        recommendations: result.recommendations,
+        analyzed_at: chrono::Utc::now(),
+    };
+
+    Ok((StatusCode::OK, Json(response)))
+}
+
