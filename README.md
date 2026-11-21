@@ -33,3 +33,4 @@ ScamShield is an explainable fraud detection web application that identifies pot
      ```
 
 Frontend runs at `http://localhost:5173` and backend API at `http://localhost:8080/api/v1`.
+

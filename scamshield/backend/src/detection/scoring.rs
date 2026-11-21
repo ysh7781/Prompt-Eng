@@ -28,8 +28,17 @@ pub fn classify_risk(score: i32) -> &'static str {
 }
 
 pub fn calculate_score(findings: &[Finding]) -> i32 {
-    let raw: i32 = findings.iter().map(|f| f.score_contribution).sum();
-    raw.min(100)
+    use std::collections::HashSet;
+    let mut seen_rules = HashSet::new();
+    let mut total = 0;
+
+    for f in findings {
+        if seen_rules.insert(&f.rule_code) {
+            total += f.score_contribution;
+        }
+    }
+
+    total.min(100)
 }
 
 pub fn generate_recommendations(findings: &[Finding], risk_level: &str) -> Vec<String> {
