@@ -26,6 +26,7 @@ pub async fn scan_message(
     let scan_req = ScanRequest {
         input: req.content,
         input_type: InputType::Message,
+        save_content: req.save_content,
     };
 
     let service = ScannerService::new(ScanRepository::new(state.db.clone()));
@@ -45,6 +46,7 @@ pub async fn scan_url(
     let scan_req = ScanRequest {
         input: req.url,
         input_type: InputType::Url,
+        save_content: Some(true),
     };
 
     let service = ScannerService::new(ScanRepository::new(state.db.clone()));

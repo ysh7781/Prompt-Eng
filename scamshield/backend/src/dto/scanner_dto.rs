@@ -8,6 +8,7 @@ pub struct ScanRequest {
     #[validate(length(min = 1, max = 10000, message = "Input must be between 1 and 10000 characters"))]
     pub input: String,
     pub input_type: InputType,
+    pub save_content: Option<bool>,
 }
 
 #[derive(Debug, Deserialize, Validate)]

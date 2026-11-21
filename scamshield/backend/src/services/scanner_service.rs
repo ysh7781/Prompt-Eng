@@ -30,13 +30,19 @@ impl ScannerService {
             InputType::Url => self.analyzer.analyze_url(&req.input),
         };
 
+        let input_content = if req.save_content.unwrap_or(true) {
+            Some(req.input.as_str())
+        } else {
+            None
+        };
+
         // Persist scan
         let scan = self
             .scan_repo
             .create_scan(
                 user_id,
                 req.input_type.as_str(),
-                Some(&req.input),
+                input_content,
                 result.score,
                 &result.risk_level,
             )
