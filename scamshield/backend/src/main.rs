@@ -3,7 +3,7 @@ use std::sync::Arc;
 use axum::{http::Method, Router};
 use sqlx::postgres::PgPoolOptions;
 use tower_http::{
-    cors::{Any, CorsLayer},
+    cors::CorsLayer,
     limit::RequestBodyLimitLayer,
     trace::TraceLayer,
 };
@@ -58,8 +58,13 @@ async fn main() -> anyhow::Result<()> {
     let cors = CorsLayer::new()
         .allow_methods([Method::GET, Method::POST, Method::PUT, Method::PATCH, Method::DELETE, Method::OPTIONS])
         .allow_origin(config.frontend_origin.parse::<axum::http::HeaderValue>()?)
-        .allow_headers(Any)
-        .allow_credentials(false);
+        .allow_headers([
+            axum::http::header::AUTHORIZATION,
+            axum::http::header::CONTENT_TYPE,
+            axum::http::header::ACCEPT,
+            axum::http::header::COOKIE,
+        ])
+        .allow_credentials(true);
 
     // Build the router
     let app = Router::new()

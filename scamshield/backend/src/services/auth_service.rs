@@ -59,6 +59,8 @@ impl AuthService {
             .ok_or_else(|| AppError::Unauthorized("Invalid refresh token".to_string()))?;
 
         if revoked_at.is_some() {
+            // Token reuse detected! In accordance with OAuth 2.0 BCP, revoke all active sessions for this user.
+            let _ = self.user_repo.revoke_all_user_tokens(user_id).await;
             return Err(AppError::Unauthorized("Refresh token has been revoked".to_string()));
         }
 
@@ -66,7 +68,7 @@ impl AuthService {
             return Err(AppError::Unauthorized("Refresh token has expired".to_string()));
         }
 
-        // Revoke old token
+        // Revoke the old token (token rotation)
         self.user_repo.revoke_refresh_token(&token_hash).await?;
 
         let user = self
@@ -114,4 +116,3 @@ impl AuthService {
         })
     }
 }
-
