@@ -55,9 +55,20 @@ async fn main() -> anyhow::Result<()> {
     };
 
     // Configure CORS
+    let configured_origin = config.frontend_origin.trim().trim_end_matches('/').to_string();
     let cors = CorsLayer::new()
         .allow_methods([Method::GET, Method::POST, Method::PUT, Method::PATCH, Method::DELETE, Method::OPTIONS])
-        .allow_origin(config.frontend_origin.parse::<axum::http::HeaderValue>()?)
+        .allow_origin(tower_http::cors::AllowOrigin::predicate(move |origin: &axum::http::HeaderValue, _| {
+            if let Ok(origin_str) = origin.to_str() {
+                let norm = origin_str.trim().trim_end_matches('/');
+                norm == configured_origin
+                    || norm == "http://localhost:5173"
+                    || norm == "http://localhost:3000"
+                    || (norm.starts_with("https://") && norm.ends_with(".vercel.app"))
+            } else {
+                false
+            }
+        }))
         .allow_headers([
             axum::http::header::AUTHORIZATION,
             axum::http::header::CONTENT_TYPE,
