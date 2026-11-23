@@ -17,6 +17,8 @@ pub struct ScoreResult {
     pub risk_level: String,
     pub findings: Vec<Finding>,
     pub recommendations: Vec<String>,
+    pub ai_analysis: Option<String>,
+    pub is_ai_powered: bool,
 }
 
 /// Classifies numerical risk score into low, moderate, high, or critical.
@@ -131,5 +133,7 @@ pub fn build_score_result(findings: Vec<Finding>) -> ScoreResult {
         risk_level,
         findings,
         recommendations,
+        ai_analysis: None,
+        is_ai_powered: false,
     }
 }

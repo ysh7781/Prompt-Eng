@@ -51,6 +51,7 @@ mod tests {
             frontend_origin: "http://localhost:5173".to_string(),
             host: "0.0.0.0".to_string(),
             port: 8080,
+            gemini_api_key: None,
         };
 
         let pool = PgPoolOptions::new()

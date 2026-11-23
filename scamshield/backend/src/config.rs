@@ -9,6 +9,7 @@ pub struct Config {
     pub frontend_origin: String,
     pub host: String,
     pub port: u16,
+    pub gemini_api_key: Option<String>,
 }
 
 impl Config {
@@ -33,6 +34,10 @@ impl Config {
                 .unwrap_or_else(|_| "8080".to_string())
                 .parse()
                 .unwrap_or(8080),
+            gemini_api_key: env::var("GEMINI_API_KEY")
+                .ok()
+                .map(|k| k.trim().to_string())
+                .filter(|k| !k.is_empty()),
         })
     }
 }

@@ -1,5 +1,5 @@
 import React from 'react'
-import { CheckCircle2, AlertTriangle, ShieldCheck, Clock, ShieldAlert, ArrowRight } from 'lucide-react'
+import { CheckCircle2, AlertTriangle, ShieldCheck, Clock, ShieldAlert, ArrowRight, Sparkles } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../ui/Card.jsx'
 import RiskBadge from './RiskBadge.jsx'
 import RiskMeter from './RiskMeter.jsx'
@@ -17,6 +17,8 @@ function ScanResult({ result }) {
     findings = [],
     recommendations = [],
     analyzed_at,
+    ai_analysis,
+    is_ai_powered,
   } = result
 
   const hasFindings = findings.length > 0
@@ -59,7 +61,29 @@ function ScanResult({ result }) {
         </CardContent>
       </Card>
 
-      {/* 2. Security Findings */}
+      {/* 2. AI Threat Intelligence Summary (when available) */}
+      {ai_analysis && (
+        <Card className="rounded-2xl border-blue-200 bg-gradient-to-r from-blue-50/80 via-white to-indigo-50/80 p-5 sm:p-6 shadow-[0_2px_12px_rgba(37,99,235,0.06)] animate-in fade-in duration-300">
+          <div className="flex items-start gap-3.5">
+            <div className="h-9 w-9 rounded-xl bg-blue-600 text-white flex items-center justify-center shrink-0 shadow-sm shadow-blue-500/20">
+              <Sparkles className="h-5 w-5" />
+            </div>
+            <div className="space-y-1.5 flex-1">
+              <div className="flex items-center gap-2">
+                <h3 className="text-sm font-bold text-[#172B4D]">AI Threat Intelligence</h3>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 border border-blue-200/80 flex items-center gap-1">
+                  <Sparkles className="h-2.5 w-2.5" /> Google Gemini
+                </span>
+              </div>
+              <p className="text-xs sm:text-sm text-[#475569] leading-relaxed">
+                {ai_analysis}
+              </p>
+            </div>
+          </div>
+        </Card>
+      )}
+
+      {/* 3. Security Findings */}
       <Card className="rounded-2xl border-[#E8EFF6] bg-white shadow-[0_2px_12px_rgba(23,43,77,0.04)]">
         <CardHeader className="border-b border-[#E8EFF6] pb-4">
           <div className="flex items-center justify-between">

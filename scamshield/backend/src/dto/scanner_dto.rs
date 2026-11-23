@@ -59,6 +59,8 @@ pub struct ScanResponse {
     pub findings: Vec<FindingResponse>,
     pub recommendations: Vec<String>,
     pub analyzed_at: DateTime<Utc>,
+    pub ai_analysis: Option<String>,
+    pub is_ai_powered: bool,
 }
 
 #[derive(Debug, Serialize)]

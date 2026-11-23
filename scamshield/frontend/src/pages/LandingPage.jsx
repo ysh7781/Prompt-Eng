@@ -186,19 +186,21 @@ function LandingPage() {
 
       const trustScore = data.risk_score != null ? Math.max(0, 100 - data.risk_score) : 100
 
-      let dynamicSummary = ''
-      if (data.risk_level === 'low') {
-        dynamicSummary =
-          'No suspicious threat indicators detected. The communication pattern appears clean and legitimate.'
-      } else if (data.risk_level === 'moderate') {
-        dynamicSummary =
-          'Moderate risk indicators flagged. Exercise caution and verify the sender before opening links or replying.'
-      } else if (data.risk_level === 'high') {
-        dynamicSummary =
-          'High threat level detected. Exhibits recognized social engineering, urgency triggers, or deceptive links.'
-      } else {
-        dynamicSummary =
-          'Critical threat detected! Strong indicators of credential harvesting or fraudulent financial impersonation. Do not interact.'
+      let dynamicSummary = data.ai_analysis || ''
+      if (!dynamicSummary) {
+        if (data.risk_level === 'low') {
+          dynamicSummary =
+            'No suspicious threat indicators detected. The communication pattern appears clean and legitimate.'
+        } else if (data.risk_level === 'moderate') {
+          dynamicSummary =
+            'Moderate risk indicators flagged. Exercise caution and verify the sender before opening links or replying.'
+        } else if (data.risk_level === 'high') {
+          dynamicSummary =
+            'High threat level detected. Exhibits recognized social engineering, urgency triggers, or deceptive links.'
+        } else {
+          dynamicSummary =
+            'Critical threat detected! Strong indicators of credential harvesting or fraudulent financial impersonation. Do not interact.'
+        }
       }
 
       setLiveResult({
@@ -207,6 +209,7 @@ function LandingPage() {
         summary: dynamicSummary,
         findings: data.findings || [],
         recommendations: data.recommendations || [],
+        isAiPowered: data.is_ai_powered,
       })
     } catch (err) {
       setLiveResult({
@@ -683,8 +686,9 @@ function LandingPage() {
             />
 
             <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-1">
-              <span className="text-xs text-neutral-400">
-                Deterministic security analysis — Zero credential storage
+              <span className="text-xs text-neutral-500 flex items-center gap-1.5">
+                <Sparkles className="h-3.5 w-3.5 text-blue-500 shrink-0" />
+                <span>AI Threat Analysis (Google Gemini) — Zero credential retention</span>
               </span>
 
               <button
@@ -718,6 +722,11 @@ function LandingPage() {
                       {liveResult.level} Risk
                     </span>
                     <span className="text-xs font-semibold text-neutral-700">Analysis Verdict</span>
+                    {liveResult.isAiPowered && (
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
+                        <Sparkles className="h-2.5 w-2.5 text-blue-600" /> Gemini AI
+                      </span>
+                    )}
                   </div>
                   <div className="text-right">
                     <span className="font-nunito text-lg font-black text-brand">

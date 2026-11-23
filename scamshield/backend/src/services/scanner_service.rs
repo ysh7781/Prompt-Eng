@@ -16,18 +16,18 @@ pub struct ScannerService {
 }
 
 impl ScannerService {
-    pub fn new(scan_repo: ScanRepository) -> Self {
+    pub fn new(scan_repo: ScanRepository, gemini_api_key: Option<String>) -> Self {
         Self {
             scan_repo,
-            analyzer: Analyzer::new(),
+            analyzer: Analyzer::with_gemini_key(gemini_api_key),
         }
     }
 
     pub async fn analyze(&self, user_id: Uuid, req: ScanRequest) -> AppResult<ScanResponse> {
-        // Run analysis
+        // Run hybrid AI + heuristic analysis
         let result = match req.input_type {
-            InputType::Message => self.analyzer.analyze_message(&req.input),
-            InputType::Url => self.analyzer.analyze_url(&req.input),
+            InputType::Message => self.analyzer.analyze_message_hybrid(&req.input).await,
+            InputType::Url => self.analyzer.analyze_url_hybrid(&req.input).await,
         };
 
         let input_content = if req.save_content.unwrap_or(true) {
@@ -84,6 +84,8 @@ impl ScannerService {
             findings: finding_responses,
             recommendations: result.recommendations,
             analyzed_at: scan.analyzed_at,
+            ai_analysis: result.ai_analysis,
+            is_ai_powered: result.is_ai_powered,
         })
     }
 
@@ -148,6 +150,8 @@ impl ScannerService {
             findings: finding_responses,
             recommendations,
             analyzed_at: scan.analyzed_at,
+            ai_analysis: None,
+            is_ai_powered: false,
         })
     }
 

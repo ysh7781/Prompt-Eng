@@ -20,7 +20,7 @@ pub async fn list_history(
     Extension(claims): Extension<Claims>,
     Query(params): Query<PaginationParams>,
 ) -> AppResult<impl IntoResponse> {
-    let service = ScannerService::new(ScanRepository::new(state.db.clone()));
+    let service = ScannerService::new(ScanRepository::new(state.db.clone()), state.config.gemini_api_key.clone());
     let response = service.get_history(claims.sub, params).await?;
     Ok(Json(response))
 }
@@ -30,7 +30,7 @@ pub async fn get_scan_detail(
     Extension(claims): Extension<Claims>,
     Path(id): Path<Uuid>,
 ) -> AppResult<impl IntoResponse> {
-    let service = ScannerService::new(ScanRepository::new(state.db.clone()));
+    let service = ScannerService::new(ScanRepository::new(state.db.clone()), state.config.gemini_api_key.clone());
     let response = service.get_scan_detail(claims.sub, id).await?;
     Ok(Json(response))
 }
@@ -40,7 +40,7 @@ pub async fn delete_scan(
     Extension(claims): Extension<Claims>,
     Path(id): Path<Uuid>,
 ) -> AppResult<impl IntoResponse> {
-    let service = ScannerService::new(ScanRepository::new(state.db.clone()));
+    let service = ScannerService::new(ScanRepository::new(state.db.clone()), state.config.gemini_api_key.clone());
     let deleted = service.delete_scan(claims.sub, id).await?;
     if !deleted {
         return Err(AppError::NotFound("Scan not found".to_string()));

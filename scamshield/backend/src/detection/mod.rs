@@ -3,8 +3,10 @@ pub mod url_rules;
 pub mod message_rules;
 pub mod scoring;
 pub mod analyzer;
+pub mod ai_analyzer;
 
 pub use analyzer::Analyzer;
+pub use ai_analyzer::AiAnalyzer;
 pub use scoring::{ScoreResult, Finding};
 
 #[cfg(test)]

@@ -29,7 +29,7 @@ pub async fn scan_message(
         save_content: req.save_content,
     };
 
-    let service = ScannerService::new(ScanRepository::new(state.db.clone()));
+    let service = ScannerService::new(ScanRepository::new(state.db.clone()), state.config.gemini_api_key.clone());
     let response = service.analyze(claims.sub, scan_req).await?;
 
     Ok((StatusCode::CREATED, Json(response)))
@@ -49,7 +49,7 @@ pub async fn scan_url(
         save_content: Some(true),
     };
 
-    let service = ScannerService::new(ScanRepository::new(state.db.clone()));
+    let service = ScannerService::new(ScanRepository::new(state.db.clone()), state.config.gemini_api_key.clone());
     let response = service.analyze(claims.sub, scan_req).await?;
 
     Ok((StatusCode::CREATED, Json(response)))
@@ -63,7 +63,7 @@ pub async fn analyze(
     req.validate()
         .map_err(|e| AppError::ValidationError(e.to_string()))?;
 
-    let service = ScannerService::new(ScanRepository::new(state.db.clone()));
+    let service = ScannerService::new(ScanRepository::new(state.db.clone()), state.config.gemini_api_key.clone());
     let response = service.analyze(claims.sub, req).await?;
 
     Ok((StatusCode::CREATED, Json(response)))
@@ -74,22 +74,23 @@ pub async fn get_history(
     Extension(claims): Extension<Claims>,
     Query(params): Query<PaginationParams>,
 ) -> AppResult<impl IntoResponse> {
-    let service = ScannerService::new(ScanRepository::new(state.db.clone()));
+    let service = ScannerService::new(ScanRepository::new(state.db.clone()), state.config.gemini_api_key.clone());
     let response = service.get_history(claims.sub, params).await?;
 
     Ok(Json(response))
 }
 
 pub async fn demo_scan(
+    State(state): State<AppState>,
     Json(req): Json<ScanRequest>,
 ) -> AppResult<impl IntoResponse> {
     req.validate()
         .map_err(|e| AppError::ValidationError(e.to_string()))?;
 
-    let analyzer = crate::detection::Analyzer::new();
+    let analyzer = crate::detection::Analyzer::with_gemini_key(state.config.gemini_api_key.clone());
     let result = match req.input_type {
-        InputType::Message => analyzer.analyze_message(&req.input),
-        InputType::Url => analyzer.analyze_url(&req.input),
+        InputType::Message => analyzer.analyze_message_hybrid(&req.input).await,
+        InputType::Url => analyzer.analyze_url_hybrid(&req.input).await,
     };
 
     let finding_responses: Vec<crate::dto::scanner_dto::FindingResponse> = result
@@ -113,6 +114,8 @@ pub async fn demo_scan(
         findings: finding_responses,
         recommendations: result.recommendations,
         analyzed_at: chrono::Utc::now(),
+        ai_analysis: result.ai_analysis,
+        is_ai_powered: result.is_ai_powered,
     };
 
     Ok((StatusCode::OK, Json(response)))
