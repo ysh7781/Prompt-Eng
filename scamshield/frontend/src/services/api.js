@@ -61,8 +61,19 @@ export const clearAccessToken = () => {
   removeStorageItem('user')
 }
 
+const getBaseUrl = () => {
+  const envUrl = (import.meta.env.VITE_API_URL || '').trim().replace(/\/+$/, '')
+  if (!envUrl) {
+    return '/api/v1'
+  }
+  if (envUrl.endsWith('/api/v1')) {
+    return envUrl
+  }
+  return `${envUrl}/api/v1`
+}
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || '/api/v1',
+  baseURL: getBaseUrl(),
   withCredentials: true, // send cookies (refresh token)
   headers: {
     'Content-Type': 'application/json',
