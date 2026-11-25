@@ -140,101 +140,127 @@ Output strictly valid JSON with this exact structure:
             },
         };
 
-        let endpoint = format!(
-            "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={}",
-            api_key
-        );
+        let candidate_base_urls = [
+            // 1. Stable GA endpoint (v1)
+            "https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent",
+            // 2. Gemini 2.0 Flash
+            "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent",
+            // 3. Latest alias
+            "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent",
+            // 4. Gemini 1.5 Pro fallback
+            "https://generativelanguage.googleapis.com/v1/models/gemini-1.5-pro:generateContent",
+        ];
 
-        match self.client.post(&endpoint).json(&request_payload).send().await {
-            Ok(response) => {
-                let status = response.status();
-                if !status.is_success() {
-                    let err_body = response.text().await.unwrap_or_default();
-                    warn!(
-                        "Gemini API returned HTTP {}: {}. Falling back to heuristic analysis.",
-                        status, err_body
-                    );
-                    return None;
-                }
+        for base_url in candidate_base_urls {
+            let endpoint = format!("{}?key={}", base_url, api_key);
 
-                let gemini_resp: GeminiResponse = match response.json().await {
-                    Ok(resp) => resp,
-                    Err(e) => {
-                        warn!("Failed to parse Gemini API JSON response: {}. Falling back to heuristic analysis.", e);
-                        return None;
+            match self.client.post(&endpoint).json(&request_payload).send().await {
+                Ok(response) => {
+                    let status = response.status();
+                    if status == reqwest::StatusCode::NOT_FOUND {
+                        warn!("Gemini endpoint {} returned 404, attempting next model candidate...", base_url);
+                        continue;
                     }
-                };
 
-                let raw_json_text = gemini_resp
-                    .candidates
-                    .as_ref()
-                    .and_then(|c| c.first())
-                    .and_then(|cand| cand.content.as_ref())
-                    .and_then(|cont| cont.parts.first())
-                    .map(|p| p.text.as_str())?;
-
-                match serde_json::from_str::<AiAnalysisJson>(raw_json_text) {
-                    Ok(parsed) => {
-                        let normalized_findings: Vec<Finding> = parsed
-                            .findings
-                            .into_iter()
-                            .map(|f| {
-                                let norm_severity = match f.severity.to_lowercase().as_str() {
-                                    "critical" => "critical",
-                                    "high" => "high",
-                                    "moderate" | "medium" => "medium",
-                                    _ => "low",
-                                };
-
-                                Finding {
-                                    rule_code: f.rule_code,
-                                    category: f.category,
-                                    description: f.description,
-                                    severity: norm_severity.to_string(),
-                                    score_contribution: f.score_contribution.clamp(1, 100),
-                                    evidence: f.evidence,
-                                }
-                            })
-                            .collect();
-
-                        let risk_level = match parsed.risk_level.to_lowercase().as_str() {
-                            "critical" => "critical".to_string(),
-                            "high" => "high".to_string(),
-                            "moderate" => "moderate".to_string(),
-                            "low" => "low".to_string(),
-                            _ => classify_risk(parsed.risk_score).to_string(),
-                        };
-
-                        info!(
-                            "AI threat scan completed: score={}, risk_level={}, findings={}",
-                            parsed.risk_score,
-                            risk_level,
-                            normalized_findings.len()
-                        );
-
-                        Some(ScoreResult {
-                            score: parsed.risk_score.clamp(0, 100),
-                            risk_level,
-                            findings: normalized_findings,
-                            recommendations: parsed.recommendations,
-                            ai_analysis: Some(parsed.ai_analysis),
-                            is_ai_powered: true,
-                        })
-                    }
-                    Err(e) => {
+                    if !status.is_success() {
+                        let err_body = response.text().await.unwrap_or_default();
                         warn!(
-                            "Failed to deserialize AI output into schema: {}. Raw text: {}",
-                            e, raw_json_text
+                            "Gemini API returned HTTP {}: {}. Attempting next model candidate...",
+                            status, err_body
                         );
-                        None
+                        continue;
+                    }
+
+                    let gemini_resp: GeminiResponse = match response.json().await {
+                        Ok(resp) => resp,
+                        Err(e) => {
+                            warn!("Failed to parse Gemini API JSON response: {}. Trying next candidate...", e);
+                            continue;
+                        }
+                    };
+
+                    let raw_json_text = match gemini_resp
+                        .candidates
+                        .as_ref()
+                        .and_then(|c| c.first())
+                        .and_then(|cand| cand.content.as_ref())
+                        .and_then(|cont| cont.parts.first())
+                        .map(|p| p.text.as_str())
+                    {
+                        Some(text) => text,
+                        None => {
+                            warn!("Gemini response had no candidate text parts. Trying next candidate...");
+                            continue;
+                        }
+                    };
+
+                    match serde_json::from_str::<AiAnalysisJson>(raw_json_text) {
+                        Ok(parsed) => {
+                            let normalized_findings: Vec<Finding> = parsed
+                                .findings
+                                .into_iter()
+                                .map(|f| {
+                                    let norm_severity = match f.severity.to_lowercase().as_str() {
+                                        "critical" => "critical",
+                                        "high" => "high",
+                                        "moderate" | "medium" => "medium",
+                                        _ => "low",
+                                    };
+
+                                    Finding {
+                                        rule_code: f.rule_code,
+                                        category: f.category,
+                                        description: f.description,
+                                        severity: norm_severity.to_string(),
+                                        score_contribution: f.score_contribution.clamp(1, 100),
+                                        evidence: f.evidence,
+                                    }
+                                })
+                                .collect();
+
+                            let risk_level = match parsed.risk_level.to_lowercase().as_str() {
+                                "critical" => "critical".to_string(),
+                                "high" => "high".to_string(),
+                                "moderate" => "moderate".to_string(),
+                                "low" => "low".to_string(),
+                                _ => classify_risk(parsed.risk_score).to_string(),
+                            };
+
+                            info!(
+                                "AI threat scan succeeded using {}: score={}, risk_level={}, findings={}",
+                                base_url,
+                                parsed.risk_score,
+                                risk_level,
+                                normalized_findings.len()
+                            );
+
+                            return Some(ScoreResult {
+                                score: parsed.risk_score.clamp(0, 100),
+                                risk_level,
+                                findings: normalized_findings,
+                                recommendations: parsed.recommendations,
+                                ai_analysis: Some(parsed.ai_analysis),
+                                is_ai_powered: true,
+                            });
+                        }
+                        Err(e) => {
+                            warn!(
+                                "Failed to deserialize AI output into schema: {}. Raw text: {}",
+                                e, raw_json_text
+                            );
+                            continue;
+                        }
                     }
                 }
-            }
-            Err(e) => {
-                warn!("HTTP request to Gemini API failed: {}. Falling back to heuristics.", e);
-                None
+                Err(e) => {
+                    warn!("HTTP request to {} failed: {}. Trying next candidate...", base_url, e);
+                    continue;
+                }
             }
         }
+
+        warn!("All Gemini model candidates failed or returned 404. Falling back to heuristic analysis.");
+        None
     }
 }
 
